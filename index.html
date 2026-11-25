@@ -1,0 +1,1887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="The Salem Trials: an online hidden-role card game of witches, accusations and trials for 4–12 players.">
+<meta property="og:title" content="The Salem Trials">
+<meta property="og:description" content="Accuse, defend and expose the coven. Play online with friends.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E🌙%3C/text%3E%3C/svg%3E">
+<title>The Salem Trials</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#14100c; --bg2:#1d1712; --panel:#221b15; --line:#3a2e23; --ink:#eadfc6; --dim:#a8987c;
+  --ember:#d0643f; --gold:#c9a24a; --witch:#8fbf6a; --spirit:#8aa4c8; --blood:#c4473d;
+  --red:#b8433a; --green:#5f8f4e; --blue:#4f74a8; --black:#2a2a2e;
+  --head:'IM Fell English SC',Georgia,serif; --body:'Inter',system-ui,sans-serif; --fell:'IM Fell English',Georgia,serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--body)}
+body{min-height:100vh;background:radial-gradient(ellipse at 50% -10%,rgba(208,100,63,.13),transparent 55%),var(--bg);transition:background .6s}
+body.night{background:radial-gradient(ellipse at 50% -10%,rgba(138,164,200,.16),transparent 55%),#0b0d12}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:var(--bg2);border-radius:8px;padding:8px 14px;transition:.15s}
+button:hover:not(:disabled){border-color:var(--gold)}
+button:disabled{opacity:.45;cursor:not-allowed}
+button.primary{background:var(--ember);border-color:var(--ember);color:#1a0f08;font-weight:600}
+button.ghost{background:transparent}
+input,select{background:#120e0a;border:1px solid var(--line);border-radius:8px;padding:9px 12px;outline:none}
+input:focus,select:focus{border-color:var(--gold)}
+h1,h2,h3{font-family:var(--head);font-weight:400;margin:0}
+h3{font-size:18px;color:var(--gold);margin-bottom:8px}
+.bar{display:flex;align-items:center;gap:12px;padding:10px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(20,16,12,.94);backdrop-filter:blur(6px);z-index:5}
+body.night .bar{background:rgba(11,13,18,.94)}
+.brand{font-family:var(--head);font-size:22px}
+.brand span{color:var(--ember)}
+#phase{flex:1;text-align:center;font-family:var(--head);font-size:18px;color:var(--dim)}
+#phase b{color:var(--ink);font-weight:400}
+#timer{font-variant-numeric:tabular-nums;color:var(--gold);margin-left:10px;font-family:var(--body);font-size:14px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+.note{color:var(--dim);font-size:13px}
+.row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.row>input{flex:1;min-width:0}
+label{display:block;font-size:13px;color:var(--dim);margin-bottom:6px}
+.pill{display:inline-block;font-size:12px;padding:2px 9px;border-radius:999px;background:#2b2219;color:var(--dim);margin-left:8px;vertical-align:middle;font-family:var(--body)}
+
+/* home */
+#home{max-width:900px;margin:0 auto;padding:30px 20px 60px}
+.hero{text-align:center;padding:14px 0 28px}
+.moon{width:80px;height:80px;border-radius:50%;margin:0 auto 16px;background:radial-gradient(circle at 35% 35%,#f4ead2,#cdbb92 60%,#8d7a55);box-shadow:0 0 60px rgba(234,223,198,.25);position:relative}
+.moon:after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 70% 40%,#14100c 38%,transparent 39%)}
+.hero h1{font-size:48px;line-height:1.1}
+.tag{font-family:var(--fell);font-style:italic;color:var(--dim);font-size:18px;max-width:600px;margin:10px auto 0}
+.homegrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.join input{text-transform:uppercase;letter-spacing:4px;font-weight:600;max-width:120px}
+.lobbies{display:flex;flex-direction:column;gap:8px;max-height:260px;overflow:auto}
+.lob{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg2)}
+.lob .code{font-weight:600;letter-spacing:3px;color:var(--gold)}
+.lob .who{flex:1;color:var(--dim);font-size:13px}
+.showcase{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+
+/* cards */
+.card{width:104px;min-height:142px;border-radius:10px;padding:8px 8px 9px;background:#efe3c8;color:#2a1d12;position:relative;border:1px solid #00000040;box-shadow:0 4px 12px rgba(0,0,0,.35);display:flex;flex-direction:column;transition:.15s;user-select:none;flex:none}
+.card:before{content:"";position:absolute;left:0;right:0;top:0;height:30px;border-radius:10px 10px 0 0;background:var(--cc)}
+.card .cn{position:relative;font-family:var(--head);font-size:14px;color:#fff;line-height:1.15;min-height:22px;padding-right:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .cp{position:absolute;top:5px;right:7px;color:#fff;font-weight:700;font-size:15px}
+.card .ci{font-size:26px;text-align:center;margin:8px 0 2px}
+.card .ct{font-size:11px;line-height:1.3;text-align:center;color:#5a4632}
+.card.red{--cc:var(--red)} .card.green{--cc:var(--green)} .card.blue{--cc:var(--blue)} .card.black{--cc:var(--black)}
+.hand{display:flex;gap:8px;overflow-x:auto;padding:6px 2px 10px;min-height:160px;align-items:flex-end}
+.hand .card.can{cursor:pointer}
+.hand .card.can:hover{transform:translateY(-6px)}
+.hand .card.sel{transform:translateY(-12px);box-shadow:0 0 0 3px var(--gold),0 10px 24px rgba(0,0,0,.5)}
+.hand .card.off{opacity:.55}
+.card .cnt{position:absolute;top:-9px;left:-9px;z-index:2;min-width:28px;height:28px;padding:0 6px;border-radius:14px;background:var(--gold);color:#1a0f08;font:700 14px/28px var(--body);text-align:center;box-shadow:0 0 0 2px #1d1712,0 3px 8px rgba(0,0,0,.5)}
+.hand{padding-top:12px!important;padding-left:10px!important;padding-right:8px!important}
+.card.stacked .cn{padding-left:17px}
+.card.stacked{box-shadow:3px 3px 0 -1px #d9cbab,3px 3px 0 0 #00000040,6px 6px 0 -1px #c8b896,6px 6px 0 0 #00000040,0 6px 14px rgba(0,0,0,.4)}
+.hand .card.stacked.sel{box-shadow:0 0 0 3px var(--gold),3px 3px 0 0 #d9cbab,6px 6px 0 0 #c8b896,0 10px 24px rgba(0,0,0,.5)}
+
+/* game */
+#game{max-width:1600px;margin:0 auto;padding:16px 20px 40px}
+.gamegrid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;align-items:start}
+.main{display:flex;flex-direction:column;gap:14px;min-width:0}
+.side{display:flex;flex-direction:column;gap:14px;position:sticky;top:64px}
+#prompt{border-left:3px solid var(--ember)}
+#prompt.calm{border-left-color:var(--line)}
+#prompt h2{font-size:24px;margin-bottom:2px}
+#prompt .act{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+#prompt .qty button{min-width:38px;padding:6px 10px;font-weight:700}
+.votes .vote{display:inline-flex;align-items:baseline;gap:6px;padding:3px 10px;border-radius:999px;border:1px solid #3f5530;background:#1c2616;color:#cfe8bf;font-size:13px}
+.votes .vote.mine{border-color:var(--witch);box-shadow:0 0 0 1px var(--witch) inset}
+.votes .vote small{color:#8fae7d;font-size:11px}
+#prompt .qty b{min-width:26px;text-align:center;font-size:20px;color:var(--gold)}
+.codebox{display:inline-flex;gap:10px;align-items:center;margin-top:8px;padding:6px 8px 6px 14px;border:1px dashed var(--gold);border-radius:10px}
+.codebox b{letter-spacing:6px;font-size:22px;color:var(--gold)}
+.seats{position:relative;width:100%;aspect-ratio:16/11;margin:26px 0 18px}
+.felt{position:absolute;left:11%;right:11%;top:12%;bottom:12%;border-radius:50%;
+  background:radial-gradient(ellipse at 50% 38%,#6b4528,#4a2d18 55%,#2f1c0e);
+  box-shadow:0 0 0 12px #2b1a0d,0 0 0 15px #6a5236,0 24px 60px rgba(0,0,0,.65),inset 0 0 70px rgba(0,0,0,.55),inset 0 2px 0 rgba(255,255,255,.06);transition:filter .6s}
+.felt:after{content:"";position:absolute;inset:9%;border-radius:50%;border:1px dashed rgba(201,162,74,.18)}
+.seats.dim .felt{filter:brightness(.55) saturate(.6) hue-rotate(-12deg)}
+.center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;gap:18px;align-items:center;z-index:1}
+.ctext{text-align:center;font-family:var(--fell);color:#e9d9b4;font-size:14px;line-height:1.35;text-shadow:0 1px 2px #000}
+.ctext b{display:block;font-family:var(--head);font-weight:400;font-size:20px;color:var(--gold)}
+.ctext .code{letter-spacing:4px;color:var(--ink);font-family:var(--body);font-weight:600}
+.pile{position:relative;width:54px;height:96px;display:flex;flex-direction:column;align-items:center}
+.pile small{position:absolute;bottom:0;font-size:11px;color:#cdb98f;white-space:nowrap}
+.cb{position:absolute;top:0;width:52px;height:72px;border-radius:6px;border:1px solid #c9a24a66;background:#3a1d14 repeating-linear-gradient(45deg,rgba(201,162,74,.12) 0 3px,transparent 3px 7px);box-shadow:0 2px 4px rgba(0,0,0,.5)}
+.cb:nth-child(1){transform:translate(-3px,3px)} .cb:nth-child(2){transform:translate(-1.5px,1.5px)}
+.cb span{position:absolute;inset:0;display:grid;place-items:center;color:var(--gold);font-weight:600;font-size:15px}
+.dtop{width:52px;height:72px;border-radius:6px;background:#efe3c8;color:#2a1d12;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:20px;border-top:12px solid var(--cc);box-shadow:0 2px 4px rgba(0,0,0,.5)}
+.dtop span{font-size:8.5px;font-family:var(--body);text-align:center;line-height:1.1;margin-top:3px;padding:0 2px}
+.dtop.red{--cc:var(--red)} .dtop.green{--cc:var(--green)} .dtop.blue{--cc:var(--blue)} .dtop.black{--cc:var(--black)}
+.dtop.none{background:transparent;border:1px dashed #c9a24a55}
+.pos{position:absolute;transform:translate(-50%,-50%)}
+.seat{width:158px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 10px;transition:box-shadow .15s,border-color .15s;z-index:2;box-shadow:0 6px 16px rgba(0,0,0,.45)}
+.seat.turn{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset,0 0 24px rgba(201,162,74,.35)}
+.seat.can{cursor:pointer;border-color:var(--ember);box-shadow:0 0 0 2px var(--ember) inset,0 0 18px rgba(208,100,63,.35)}
+.seat.can:hover{background:#2e231a}
+.seat.t1{box-shadow:0 0 0 3px var(--gold) inset}
+.seat.dead{opacity:.55;filter:grayscale(.6)}
+.seat.me{background:linear-gradient(#2c2219,var(--panel))}
+.sh{display:flex;gap:8px;align-items:center}
+.av{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-family:var(--head);font-size:17px;color:#1a0f08;flex:none}
+.sh .nm{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sh .sub{font-size:11.5px;color:var(--dim)}
+.tags{display:flex;gap:3px;flex-wrap:wrap;margin-top:5px}
+.t{font-size:11px;padding:0 6px;border-radius:999px;border:1px solid var(--line);color:var(--dim)}
+.t.host{color:var(--gold);border-color:#5a4826}
+.t.coven{color:var(--witch);border-color:#3f5530}
+.t.dead{color:var(--blood);border-color:#5a2420}
+.t.blue{color:#cfe0f7;border-color:var(--blue);background:#24344d}
+.t.green{color:#d5ecc9;border-color:var(--green);background:#2a3d23}
+.trials{display:flex;flex-direction:column;align-items:center;gap:5px;z-index:1}
+.trow{display:flex;gap:4px}
+.trials{display:block}
+.trials .front{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);margin-bottom:6px}
+.front{display:flex;gap:7px;justify-content:center}
+.fcard{width:48px;height:64px;border-radius:5px;background:#efe3c8;color:#2a1d12;border-top:12px solid var(--cc);box-shadow:0 3px 8px rgba(0,0,0,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;cursor:help}
+.fcard b{font-size:21px;line-height:1;font-weight:400}
+.fcard span{font-size:8px;font-weight:600;line-height:1.05;text-align:center;margin-top:2px;padding:0 1px}
+.fcard em{position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-style:normal;font-size:9.5px;color:#cfe0f7;white-space:nowrap;text-shadow:0 1px 2px #000}
+.fcard.linked em{color:#ffd27a}
+.fcard.blue{--cc:var(--blue);box-shadow:0 0 0 1px #7fa3d6,0 0 12px rgba(79,116,168,.7),0 3px 8px rgba(0,0,0,.6)}
+.fcard.green{--cc:var(--green)}
+.fcard.red{--cc:var(--red)}
+.fcard u{position:absolute;top:-11px;right:3px;text-decoration:none;color:#fff;font-weight:700;font-size:9px;line-height:11px}
+.fcard .fcnt{position:absolute;top:-9px;left:-9px;font-style:normal;min-width:20px;height:20px;border-radius:10px;background:var(--gold);color:#1a0f08;font:700 11px/20px var(--body);text-align:center;box-shadow:0 0 0 2px #2b1a0d;padding:0 3px;z-index:2}
+.fcard.fx-hold{visibility:hidden}
+.fcard.fx-land{animation:landT .5s both}
+.arrange{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.acard{width:74px;height:100px;border-radius:8px;background:#efe3c8;color:#2a1d12;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:grab;position:relative;border:2px solid #c9a24a;outline:3px solid #5e1c17;outline-offset:-8px;transition:transform .15s,box-shadow .15s;user-select:none}
+.acard b{font-size:30px;font-weight:400;line-height:1}
+.acard small{font-size:9.5px;text-transform:uppercase;letter-spacing:.6px;font-weight:600}
+.acard .pos-n{position:absolute;top:-10px;left:-10px;width:22px;height:22px;border-radius:50%;background:var(--gold);color:#1a0f08;font-size:12px;font-weight:700;display:grid;place-items:center}
+.acard.witch{background:#d7ecc6} .acard.constable{background:#f5e3b3}
+.acard:hover{transform:translateY(-4px)}
+.acard.sel{box-shadow:0 0 0 3px var(--ember),0 8px 20px rgba(0,0,0,.5);transform:translateY(-6px)}
+.acard.over{box-shadow:0 0 0 3px var(--gold)}
+.acard.dragging{opacity:.4}
+.trials.gone{opacity:.75}
+.tc{width:30px;height:42px;border-radius:4px;position:relative;display:grid;place-items:center;font-size:17px;box-shadow:0 2px 5px rgba(0,0,0,.55);transition:transform .15s}
+.tc.back{background:#5e1c17 repeating-linear-gradient(45deg,rgba(0,0,0,.2) 0 3px,transparent 3px 6px);border:1px solid #c9a24a88}
+.tc.back:before{content:"TRIAL";position:absolute;writing-mode:vertical-rl;font:600 7px/1 var(--body);letter-spacing:1.5px;color:#e8c77a}
+.tc.back i{position:absolute;right:1px;bottom:0;font-style:normal;font-size:10px;opacity:.85}
+.tc.up{background:#efe3c8;border:1px solid #efe3c8}
+.tc.up.witch{background:#bfe3a5;border-color:#bfe3a5}
+.tc.up.constable{background:#f2d58c;border-color:#f2d58c}
+.tc.can{cursor:pointer;outline:2px solid var(--ember);outline-offset:2px}
+.tc.can:hover{transform:translateY(-4px)}
+.meter .hc{display:none;color:var(--dim)}
+.seats.compact .seat{width:128px;padding:6px 8px;border-radius:10px}
+.seats.compact .av{width:24px;height:24px;font-size:13px}
+.seats.compact .sh{gap:6px}
+.seats.compact .sh .sub{display:none}
+.seats.compact .meter .hc{display:inline}
+.seats.compact .tc{width:24px;height:34px;font-size:14px}
+.seats.compact .tc.back:before{font-size:6px;letter-spacing:1px}
+.seats.compact .fcard{width:30px;height:40px;border-top-width:8px}
+.seats.compact .fcard b{font-size:13px} .seats.compact .fcard span{font-size:5.5px}
+.seat .rm ~ .sh{padding-right:18px}
+.meter{margin-top:6px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--dim)}
+.meter .mb{flex:1;height:7px;border-radius:4px;background:#120e0a;overflow:hidden;border:1px solid var(--line)}
+.meter .mb i{display:block;height:100%;background:linear-gradient(90deg,#8a3a2f,var(--blood));border-radius:4px}
+.meter b{color:var(--ink);font-weight:600}
+.meter.devoted .mb i{background:linear-gradient(90deg,#3d5a86,#7fa3d6)}
+.marks{font-size:11px;color:var(--witch);margin-top:4px;line-height:1.25}
+.rm{position:absolute;top:4px;right:4px;background:#2b2219;border:1px solid var(--line);border-radius:50%;width:24px;height:24px;padding:0;color:var(--ink);font-size:12px;line-height:1}
+.rm:hover{border-color:var(--blood)!important;color:var(--blood)}
+#handwrap h3{display:flex;align-items:center;gap:10px}
+#handwrap .btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.decks{display:flex;gap:16px;font-size:13px;color:var(--dim)}
+#mysec .big{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+#mysec .tc{width:58px;height:80px;font-size:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-radius:6px}
+#mysec .tc small{font-size:8.5px;text-transform:uppercase;letter-spacing:.5px;color:#5a4632;font-weight:600}
+#mysec .tc.own{background:#efe3c8;border:1px solid #c9a24a;outline:3px solid #5e1c17;outline-offset:-6px}
+#mysec .tc.own.witch{background:#d7ecc6}
+#mysec .tc.own.constable{background:#f5e3b3}
+#mysec .tc.up{opacity:.6}
+#mysec .tc em{font-style:normal;font-size:8px;color:#8a6a45;letter-spacing:.3px}
+#mysec p{margin:8px 0 0;font-size:13.5px;color:var(--dim)}
+.chatpanel{display:flex;flex-direction:column;padding:0;overflow:hidden}
+.chatlog{height:260px;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:5px;font-size:14px}
+.msg .ch{font-size:10px;text-transform:uppercase;letter-spacing:1px;padding:0 5px;border-radius:4px;margin-right:4px}
+.msg.coven .ch{background:#2c3d22;color:var(--witch)} .msg.coven b{color:var(--witch)}
+.msg.spirits .ch{background:#223044;color:var(--spirit)} .msg.spirits b{color:var(--spirit)}
+.msg.sys{color:var(--dim);font-style:italic;font-family:var(--fell)}
+#chatform{display:flex;gap:6px;padding:10px;border-top:1px solid var(--line)}
+#chatform input{flex:1;min-width:0}
+#chsel{padding:8px 6px;font-size:13px}
+.log{max-height:230px;overflow-y:auto;font-family:var(--fell);font-size:15px;display:flex;flex-direction:column;gap:5px}
+.log .d{color:var(--blood)} .log .n{color:var(--spirit)} .log .w{color:var(--witch)}
+.empty{color:var(--dim);font-size:13px}
+#hostbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+#hostbar .sp{flex:1}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(30px);background:#2d241b;border:1px solid var(--gold);padding:10px 16px;border-radius:10px;opacity:0;transition:.25s;pointer-events:none;max-width:90vw;z-index:20}
+#toast.on{opacity:1;transform:translateX(-50%)}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:grid;place-items:center;z-index:30;padding:20px}
+#modal .panel{max-width:680px;max-height:86vh;overflow:auto;padding:24px}
+#modal h2{font-size:30px;margin-bottom:6px}
+#modal h3{margin-top:16px}
+#modal p,#modal li{color:#d5c8ac;font-size:14.5px}
+#modal .showcase{justify-content:flex-start}
+.win{font-size:34px!important}
+.win.town{color:var(--gold)} .win.witches{color:var(--witch)}
+
+
+/* ---- one-screen game layout ---- */
+:root{--barh:53px}
+body.ingame{overflow:hidden}
+body.ingame #game{height:calc(100vh - var(--barh));height:calc(100dvh - var(--barh))}
+#game{max-width:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr) 310px;grid-template-rows:minmax(0,1fr)}
+.stage{display:flex;flex-direction:column;min-width:0;min-height:0}
+.tablearea{flex:1;min-height:0;display:grid;place-items:center;padding:14px 10px 6px;overflow:hidden}
+#seats.seats{margin:0;aspect-ratio:auto}
+.dock{flex:none;border-top:1px solid var(--line);background:linear-gradient(#1b1510f2,#15100cf7);padding:8px 14px 10px;display:flex;flex-direction:column;gap:6px;box-shadow:0 -10px 30px rgba(0,0,0,.35);position:relative;z-index:6}
+body.night .dock{background:linear-gradient(#10131bf2,#0b0d12f7)}
+#prompt{background:none;border:none;padding:0 0 0 10px;border-left:3px solid var(--ember);border-radius:0;font-size:14px;line-height:1.4}
+#prompt.calm{border-left-color:var(--line);color:var(--dim)}
+#prompt h2{font-size:19px;display:inline;margin:0 8px 0 0;color:var(--ink)}
+#prompt .act{margin-top:6px}
+#prompt .codebox{margin-top:4px}
+.dockrow{display:flex;gap:12px;align-items:flex-end;min-height:0}
+#handwrap{flex:1;min-width:0;display:flex;gap:12px;align-items:flex-end;background:none;border:none;padding:0}
+#handwrap .hand{flex:1;min-width:0;min-height:0;padding:12px 4px 2px 10px!important;gap:8px}
+#handwrap .btns{display:flex;flex-direction:column;gap:6px;flex:none;padding-bottom:2px}
+.dock .card{width:86px;min-height:116px;padding:6px 6px 7px}
+.dock .card .ci{font-size:22px;margin:5px 0 1px}
+.dock .card .ct{font-size:10px}
+.dock .card .cn{font-size:13px}
+#hostbar{flex:none;display:flex;flex-direction:column;gap:6px;align-items:stretch}
+#hostbar .sp{display:none}
+#handwrap[hidden] + #hostbar{flex-direction:row;flex-wrap:wrap;flex:1;align-items:center}
+#handwrap[hidden] + #hostbar .sp{display:block;flex:1}
+#hostbar label{display:flex;align-items:center;gap:6px;font-size:12px}
+#hostbar select{padding:5px 6px}
+.side{height:100%;min-height:0;display:flex;flex-direction:column;gap:10px;padding:10px;border-left:1px solid var(--line);background:#120e0a;position:static;top:auto;overflow:hidden}
+.sidehead{display:none}
+.side .panel{padding:12px}
+.side .chatpanel{flex:1;min-height:120px;padding:0}
+.side .chatlog{height:auto;flex:1;min-height:0}
+.side .logpanel{flex:none}
+.side .log{max-height:150px}
+#mysec h3{margin-bottom:4px;font-size:16px}
+#mysec .tc{width:48px;height:66px;font-size:20px}
+#mysec p{font-size:12.5px;margin-top:6px}
+.confess{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap}
+.confess .acard{width:58px;height:78px;cursor:pointer}
+.confess .acard b{font-size:22px}
+.confess .acard.up{opacity:.35;cursor:not-allowed}
+#sideBtn{position:relative;padding:6px 10px}
+#unread{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;background:var(--ember);color:#1a0f08;font-size:11px;font-weight:700;line-height:18px;padding:0 4px}
+.arrange{margin-top:6px} .arrange .acard{width:62px;height:84px} .arrange .acard b{font-size:24px}
+@media (max-width:900px){
+  #game{grid-template-columns:minmax(0,1fr)}
+  #sideBtn{display:inline-block}
+  .side{position:fixed;right:0;top:var(--barh);bottom:0;width:min(360px,92vw);z-index:20;transform:translateX(105%);transition:transform .25s ease;box-shadow:-20px 0 40px rgba(0,0,0,.5)}
+  .side.open{transform:none}
+  .sidehead{display:flex;justify-content:space-between;align-items:center;font-family:var(--head);font-size:18px;color:var(--gold)}
+  .dock{padding:6px 8px 8px}
+  .dock .card{width:66px;min-height:88px;padding:5px}
+  .dock .card .ct{display:none}
+  .dock .card .cn{font-size:11px;min-height:18px}
+  .dock .card .cp{font-size:13px;top:4px;right:5px}
+  .dock .card:before{height:24px}
+  .dock .card .ci{font-size:22px;margin-top:8px}
+  #handwrap .btns button{padding:7px 9px;font-size:13px}
+  #prompt{font-size:13px} #prompt h2{font-size:16px}
+  #hostbar button{padding:7px 9px;font-size:13px}
+  .card .cnt{min-width:24px;height:24px;line-height:24px;font-size:12px;top:-8px;left:-8px}
+}
+@media (min-width:901px){#sideBtn{display:none!important}}
+.bar .sm{display:none}
+@media (max-width:600px){
+  .bar{gap:6px;padding:8px 10px}
+  .brand{font-size:16px;white-space:nowrap}
+  #phase{font-size:13px;line-height:1.25}
+  #phase .pill{display:none}
+  #timer{display:block;margin:0}
+  .bar button{padding:6px 10px;font-size:13px}
+  .bar .lg{display:none} .bar .sm{display:inline}
+}
+
+/* animations */
+#fx{position:fixed;inset:0;pointer-events:none;z-index:15;overflow:hidden}
+.flyer{position:absolute;left:0;top:0;will-change:transform,opacity}
+.flyer .card{box-shadow:0 14px 30px rgba(0,0,0,.6)}
+.fback{width:46px;height:64px;border-radius:5px;background:#3a1d14 repeating-linear-gradient(45deg,rgba(201,162,74,.14) 0 3px,transparent 3px 7px);border:1px solid #c9a24a99;box-shadow:0 8px 18px rgba(0,0,0,.55)}
+.fback.trial{width:30px;height:42px;border-radius:4px;background:#5e1c17 repeating-linear-gradient(45deg,rgba(0,0,0,.2) 0 3px,transparent 3px 6px);border-color:#c9a24a88}
+.flyer.burn .fback{background:#8a3a1a;box-shadow:0 0 18px 6px rgba(255,120,40,.65)}
+.flyer.ghost{opacity:.7}
+.fxbanner{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);font-family:var(--head);font-size:58px;line-height:1.1;color:var(--ink);text-shadow:0 4px 30px #000,0 0 2px #000;text-align:center;white-space:nowrap;max-width:92vw}
+.fxbanner{padding:18px 60px;background:radial-gradient(ellipse at center,rgba(6,5,4,.78) 0%,rgba(6,5,4,.5) 45%,transparent 72%)}
+.fxbanner small{white-space:normal;max-width:min(760px,88vw);margin-left:auto;margin-right:auto;line-height:1.35;display:block;font-family:var(--fell);font-style:italic;font-size:20px;color:#d8c9a8;margin-top:6px}
+.fxbanner.night{color:#cfe0f7} .fxbanner.dead{color:#ff8f84} .fxbanner small.also{font-size:16px;color:#cdbf9f;margin-top:8px}
+.fxbanner small b{color:var(--ink);font-weight:600;font-style:normal} .fxbanner.dawn{color:#f2d58c} .fxbanner.pact{color:var(--witch)}
+.fxbanner.win{font-size:68px} .fxbanner.win.town{color:var(--gold)} .fxbanner.win.witches{color:var(--witch)}
+@keyframes bannerIn{0%{opacity:0;transform:translate(-50%,-38%) scale(.92);letter-spacing:10px}100%{opacity:1;transform:translate(-50%,-50%) scale(1);letter-spacing:1px}}
+.veil{position:absolute;inset:0}
+@keyframes veilIn{from{opacity:0}to{opacity:1}} @keyframes veilOut{from{opacity:1}to{opacity:0}}
+@keyframes bannerOut{from{opacity:1;transform:translate(-50%,-50%)}to{opacity:0;transform:translate(-50%,-58%)}}
+.beam{position:absolute;height:4px;margin-top:-2px;transform-origin:0 50%;border-radius:2px;background:linear-gradient(90deg,#7fa3d6,#ffd27a,#7fa3d6);box-shadow:0 0 14px 3px rgba(127,163,214,.8);animation:beam 2.6s ease both}
+@keyframes beam{0%{opacity:0;clip-path:inset(0 100% 0 0)}25%{opacity:1;clip-path:inset(0 0 0 0)}75%{opacity:1}100%{opacity:0}}
+.veil.night{background:radial-gradient(circle at 50% 35%,rgba(40,60,110,.25),rgba(4,6,16,.88))}
+.veil.pact{background:radial-gradient(circle at 50% 35%,rgba(70,110,50,.25),rgba(6,12,4,.85))}
+.veil.blood{background:radial-gradient(circle at 50% 40%,rgba(120,20,15,.35),rgba(20,4,4,.85))}
+.veil.dawn{background:radial-gradient(circle at 50% 100%,rgba(242,190,110,.35),rgba(30,18,8,.55))}
+@keyframes veil{0%{opacity:0}25%{opacity:1}75%{opacity:1}100%{opacity:0}}
+.stamp{position:absolute;transform:translate(-50%,-50%) rotate(-12deg);font-family:var(--head);font-size:30px;color:var(--blood);border:3px solid var(--blood);padding:0 12px;border-radius:6px;background:rgba(20,10,8,.75);animation:stamp 1.5s both;white-space:nowrap}
+.stamp.deadwitch{color:var(--witch);border-color:var(--witch);background:rgba(10,18,8,.85)}
+.stamp.dead{color:#ddd;border-color:#aaa;background:rgba(10,10,10,.8)}
+@keyframes stamp{0%{opacity:0;transform:translate(-50%,-50%) rotate(-12deg) scale(2.6)}16%{opacity:1;transform:translate(-50%,-50%) rotate(-12deg) scale(1)}80%{opacity:1}100%{opacity:0}}
+.seat.fx-hit-red{animation:hitRed .8s both}
+@keyframes hitRed{0%,100%{transform:translate(-50%,-50%)}12%{transform:translate(calc(-50% - 7px),-50%);box-shadow:0 0 0 3px var(--blood),0 0 34px rgba(196,71,61,.8)}30%{transform:translate(calc(-50% + 6px),-50%)}48%{transform:translate(calc(-50% - 4px),-50%)}66%{transform:translate(calc(-50% + 2px),-50%);box-shadow:0 0 0 2px var(--blood),0 0 20px rgba(196,71,61,.5)}}
+.seat.fx-hit-green{animation:glowG .8s both}
+@keyframes glowG{0%,100%{transform:translate(-50%,-50%)}30%{transform:translate(-50%,-50%) scale(1.05);box-shadow:0 0 0 3px var(--green),0 0 30px rgba(95,143,78,.8)}}
+.seat.fx-hit-blue{animation:glowB .8s both}
+@keyframes glowB{0%,100%{transform:translate(-50%,-50%)}30%{transform:translate(-50%,-50%) scale(1.05);box-shadow:0 0 0 3px var(--blue),0 0 34px rgba(79,116,168,.9)}}
+.seat.fx-bump{animation:bump .4s both}
+@keyframes bump{0%,100%{transform:translate(-50%,-50%)}40%{transform:translate(-50%,-50%) scale(1.06)}}
+.seat.fx-trial{animation:trialS 1.4s both}
+@keyframes trialS{0%,100%{transform:translate(-50%,-50%)}15%,70%{transform:translate(-50%,-50%) scale(1.06);box-shadow:0 0 0 3px var(--blood),0 0 36px rgba(196,71,61,.7)}}
+.seat.fx-dying{animation:dying 1.3s both}
+@keyframes dying{0%{transform:translate(-50%,-50%);filter:none;opacity:1}15%{transform:translate(-50%,-50%) scale(1.08);box-shadow:0 0 0 3px var(--blood),0 0 46px var(--blood)}30%{transform:translate(calc(-50% - 7px),-50%)}45%{transform:translate(calc(-50% + 7px),-50%)}60%{transform:translate(calc(-50% - 4px),-50%)}100%{transform:translate(-50%,-50%)}}
+.fx-hold{visibility:hidden}
+.tc.fx-cover:after,.tc.fx-flip:after{content:"";position:absolute;inset:-1px;border-radius:inherit;background:#5e1c17 repeating-linear-gradient(45deg,rgba(0,0,0,.2) 0 3px,transparent 3px 6px);border:1px solid #c9a24a88}
+.tc.fx-flip{animation:flip .8s ease both;z-index:3}
+.tc.fx-flip:after{animation:hideBack .8s both}
+@keyframes flip{0%{transform:perspective(300px) rotateY(180deg) scale(1.3)}50%{transform:perspective(300px) rotateY(90deg) scale(1.5)}100%{transform:perspective(300px) rotateY(0) scale(1)}}
+@keyframes hideBack{0%,49%{opacity:1}50%,100%{opacity:0}}
+.tc.fx-land{animation:landT .45s both}
+@keyframes landT{0%{transform:scale(1.4);opacity:.3}100%{transform:scale(1);opacity:1}}
+.hand .card.fx-pop{animation:popC .5s both}
+@keyframes popC{0%{transform:translateY(-34px) scale(.85);opacity:0}100%{transform:none;opacity:1}}
+.seat.turn:not([class*="fx-"]){animation:turnGlow 2.4s ease-in-out infinite}
+@keyframes turnGlow{0%,100%{box-shadow:0 0 0 1px var(--gold) inset,0 0 18px rgba(201,162,74,.2)}50%{box-shadow:0 0 0 1px var(--gold) inset,0 0 32px rgba(201,162,74,.45)}}
+@media (max-width:700px){.fxbanner{font-size:38px}.fxbanner small{font-size:15px}.fxbanner.win{font-size:42px}}
+@media (prefers-reduced-motion: reduce){.seat.turn{animation:none!important}}
+/* small tables (phones) */
+.seats.tiny .felt{left:10%;right:10%;top:12%;bottom:12%}
+.seats.tiny.compact .seat{width:82px;padding:5px 6px}
+.seats.tiny.compact .av{display:none}
+.seats.tiny.compact .sh .nm{font-size:11.5px}
+.seats.tiny.compact .meter{font-size:10px;gap:4px}
+.seats.tiny.compact .meter .mb{display:none}
+.seats.tiny.compact .t{font-size:9.5px;padding:0 4px}
+.seats.tiny.compact .marks{font-size:9.5px}
+.seats.tiny.compact .tc{width:15px;height:21px;font-size:9px;border-radius:3px}
+.seats.tiny.compact .fcard{width:22px;height:30px;border-top-width:6px}
+.seats.tiny.compact .fcard b{font-size:11px} .seats.tiny.compact .fcard span{display:none} .seats.tiny.compact .fcard em{font-size:8px;top:-12px}
+.acard{width:58px;height:80px} .acard b{font-size:24px}
+.seats.tiny.compact .tc.back:before{font-size:4px;letter-spacing:.5px}
+.seats.tiny.compact .tc.back i{font-size:7px}
+.seats.tiny.compact .trials{gap:1px}
+.seats.tiny.compact .pile{display:none}
+.seats.tiny .center{max-width:30%}
+.seats.tiny .tc{width:20px;height:28px;font-size:12px}
+.seats.tiny .tc.back:before{font-size:5px;letter-spacing:1px}
+.seats.tiny .trials{gap:2px}
+.seats.tiny .center{gap:8px}
+.seats.tiny .cb,.seats.tiny .dtop{width:38px;height:52px}
+.seats.tiny .pile{width:40px;height:72px}
+.seats.tiny .ctext b{font-size:16px}
+@media (max-width:1150px){
+  .homegrid{grid-template-columns:1fr}
+  .brand span{display:none}
+  #phase{font-size:15px}
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="brand">The Salem <span>Trials</span></div>
+  <div id="phase"></div>
+  <button id="sideBtn" class="ghost" hidden aria-label="Open chat and log">💬<span id="unread" hidden></span></button>
+  <button id="sndBtn" class="ghost">🔊</button>
+  <button id="howBtn" class="ghost" aria-label="How to play"><span class="lg">How to play</span><span class="sm">?</span></button>
+  <button id="leaveTop" class="ghost" hidden>Leave</button>
+</header>
+
+<section id="home">
+  <div class="hero">
+    <div class="moon"></div>
+    <h1>The Salem Trials</h1>
+    <p class="tag">Every villager sits at the table with trial cards face down. Some of those cards are witches. Accuse, defend, and bring them to trial before the coven takes the town.</p>
+  </div>
+  <div class="homegrid">
+    <div class="panel">
+      <label for="nick">Your name in the village</label>
+      <input id="nick" maxlength="20" placeholder="e.g. Abigail" style="width:100%">
+      <div class="row"><button id="createBtn" class="primary" disabled style="flex:1">Create a game</button></div>
+      <div class="row join"><input id="codeIn" placeholder="CODE" maxlength="4"><button id="joinBtn" disabled>Join with code</button></div>
+      <p id="homeNote" class="note">Connecting to the village…</p>
+    </div>
+    <div class="panel">
+      <h3>Open games</h3>
+      <div id="lobbies" class="lobbies"><span class="empty">Looking for games…</span></div>
+    </div>
+  </div>
+  <div class="showcase" id="showcase"></div>
+</section>
+
+<section id="game" hidden>
+  <div class="stage">
+    <div id="tablearea" class="tablearea"><div id="seats" class="seats"></div></div>
+    <div class="dock">
+      <div id="prompt"></div>
+      <div class="dockrow"><div id="handwrap"></div><div id="hostbar"></div></div>
+    </div>
+  </div>
+  <aside class="side" id="side">
+    <div class="sidehead"><b>The village</b><button id="closeSide" class="ghost" aria-label="Close">✕</button></div>
+    <div id="mysec" class="panel"></div>
+    <div class="panel chatpanel">
+      <div id="chatlog" class="chatlog"></div>
+      <form id="chatform">
+        <select id="chsel" aria-label="Channel"></select>
+        <input id="chatin" maxlength="300" placeholder="Speak to the village…" autocomplete="off">
+        <button>Send</button>
+      </form>
+    </div>
+    <div class="panel logpanel"><h3>Town record</h3><div id="log" class="log"></div></div>
+  </aside>
+</section>
+
+<div id="modal" hidden><div class="panel">
+  <h2>How to play</h2>
+  <p>A hidden-role card game for 4–12 players around one table. The town wins when every <b>Witch</b> trial card has been revealed. The coven wins when everyone left alive holds a Witch trial card.</p>
+  <h3>Trial cards</h3>
+  <p>Each player is dealt trial cards face down on the table in front of them: mostly <b>Innocent</b>, plus one or two <b>Witch</b> cards and one <b>Constable</b>. You can look at your own. Hold a Witch card and you are part of the coven. When a Witch card is turned face up, its holder dies. When all of a player’s trial cards are face up, they die too.</p>
+  <h3>Before the first night</h3>
+  <p>After the deal, everyone arranges their trial cards face down in any order they like. Accusers pick cards <b>by position</b>, so where you hide your Witch or Constable matters.</p>
+  <h3>Your turn</h3>
+  <p>Do one of two things: <b>draw 2 cards</b>, or <b>play any number of cards</b> from your hand and then end your turn. <b>No card from your hand can be played on yourself.</b> You can play several copies of an accusation or Defense card on the same player in one go.</p>
+  <ul>
+    <li><b style="color:#e0786d">Red</b> cards are accusations (1, 3 or 7 points). When a player reaches <b>7 points</b> (or 14 if they have Devotion), they go on trial. Whoever played the last accusation picks one of their face-down trial cards to turn over, and their accusations are cleared.</li>
+    <li><b style="color:#9bd085">Green</b> cards take effect at once: remove accusations, skip a turn, burn a hand, steal a hand, or shift blame.</li>
+    <li><b style="color:#9ab8e3">Blue</b> cards lie face up on the table in front of a player: Sanctuary (safe at night), Devotion (needs 14 accusation points to go on trial instead of 7), Bound Souls (there are two; when both are on the table, the two players they lie in front of are linked and die together).</li>
+  </ul>
+  <h3>Night Falls</h3>
+  <p>Drawing this card starts a night. The coven secretly votes on a victim (30 seconds; most votes wins, a tie is decided at random between the tied choices), then the Constable guards someone (not themselves). At dawn, anyone may <b>confess</b> by turning over one of their own trial cards. The marked player dies unless they were guarded, confessed, or are in Sanctuary. Dawn announces who the Constable protected, who the coven attacked, and what happened. When the night ends, the discard pile is shuffled back into the deck, and Night Falls always goes among the last 10 cards.</p>
+  <h3>The Pact</h3>
+  <p><b>The Raven</b> is a blue card the coven places face up in front of a player on the first night. After that it acts like any other blue card: Hex Breaker can discard it, Blame moves it, and once discarded it can be drawn and played again. When <b>The Pact</b> is drawn, the player who drew it turns over one trial card of whoever holds the Raven. Then every living player chooses one face-down trial card (by its position) to take from the player on their left. A villager who takes a Witch card joins the coven, and <b>once a witch, always a witch</b>: even if your Witch card is later taken, you stay in the coven. The town still wins once every Witch card has been revealed. <b>When a player dies, everyone learns whether they were a witch.</b> A dead witch with no Witch card among their trial cards must have passed it on in the Pact, so it is now in someone else’s hands.</p>
+  <h3>The cards</h3>
+  <div class="showcase" id="allcards"></div>
+  <div class="row"><button id="closeHow" class="primary">Got it</button></div>
+</div></div>
+<div id="toast"></div>
+
+<script src="firebase-config.js"></script>
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clone = o => JSON.parse(JSON.stringify(o));
+// Cryptographically strong randomness for everything that decides the game (deck, trial cards, turn order, bots).
+const randInt = n => { // unbiased integer in [0, n)
+  if (n <= 1) return 0;
+  try { const lim = Math.floor(0x100000000 / n) * n, b = new Uint32Array(1); do { crypto.getRandomValues(b); } while (b[0] >= lim); return b[0] % n; }
+  catch(e) { return Math.floor(Math.random() * n); }
+};
+const rand = () => randInt(0x40000000) / 0x40000000;
+const rnd = a => a[randInt(a.length)];
+// Where Night Falls is inserted into a deck of length L: always somewhere among the last 10 cards.
+const nightSpot = L => L - randInt(Math.min(10, L + 1));
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = randInt(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const safeId = s => (String(s).replace(/[^A-Za-z0-9_\-~:@+]/g, '_').slice(0, 120)) || 'anon';
+const store = { get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }, set(k,v){ try { localStorage.setItem(k,v); } catch(e){} } };
+
+/* ---------- content ---------- */
+const CARD = {
+  rumor:      { n:'Rumor',       c:'red',   pts:1, i:'🗣️', txt:'Place on a player: 1 accusation point.' },
+  testimony:  { n:'Testimony',   c:'red',   pts:3, i:'📜', txt:'Place on a player: 3 accusation points.' },
+  eyewitness: { n:'Eyewitness',  c:'red',   pts:7, i:'👁️', txt:'Place on a player: 7 points. Instant trial.' },
+  defense:    { n:'Defense',     c:'green', i:'🕊️', txt:'Remove up to 3 accusation points from a player.' },
+  pillory:    { n:'Pillory',     c:'green', i:'⛓️', txt:'A player loses their next turn.' },
+  fire:       { n:'Fire',        c:'green', i:'🔥', txt:'A player discards their whole hand.' },
+  hexbreaker: { n:'Hex Breaker', c:'green', i:'✂️', txt:'Discard 1 blue card in front of a player.' },
+  thievery:   { n:'Thievery',    c:'green', two:true, i:'💰', txt:'Take a player’s hand and give it to any player.' },
+  blame:      { n:'Blame',       c:'green', two:true, i:'👉', txt:'Move every card in front of one player to another.' },
+  sanctuary:  { n:'Sanctuary',   c:'blue',  i:'⛪', txt:'This player cannot die at night.' },
+  devotion:   { n:'Devotion',    c:'blue',  i:'🙏', txt:'This player needs 14 accusation points to go on trial.' },
+  bound:      { n:'Bound Souls', c:'blue',  i:'🔗', txt:'When both Bound Souls lie on the table, those two players are linked: if one dies, so does the other.' },
+  night:      { n:'Night Falls', c:'black', i:'🌑', txt:'The coven hunts. Drawn from the deck.' },
+  pact:       { n:'The Pact',    c:'black', i:'🩸', txt:'Trial cards change hands. Drawn from the deck.' },
+  raven:      { n:'The Raven',   c:'blue',  i:'🐦‍⬛', txt:'When The Pact is drawn, this player must reveal a trial card. The coven places it on the first night.' },
+};
+const DECK = { rumor:35, testimony:5, eyewitness:1, defense:3, pillory:3, fire:1, hexbreaker:1, thievery:1, blame:2, sanctuary:1, devotion:1, bound:2 };
+const SECRET = { innocent:{ n:'Innocent', i:'🌾' }, witch:{ n:'Witch', i:'🧹' }, constable:{ n:'Constable', i:'🏮' } };
+const BOT_NAMES = ['Goodwife Thorne','Elias Ward','Mercy Lowell','Josiah Pike','Prudence Hale','Ezekiel Crane','Temperance Avery','Silas Webb','Hope Whitcomb','Obadiah Finch','Patience Marsh'];
+const COLORS = ['#d0643f','#c9a24a','#8fbf6a','#8aa4c8','#c57fa0','#d9b27c','#7fb3a8','#b08fd6','#e0896b','#a3b86c','#6f9bd1','#d4a5a5'];
+// Card types you may play several copies of at once on the same player.
+const MULTI = new Set(['rumor', 'testimony', 'eyewitness', 'defense']);
+const MAXP = 12, MINP = 4, TRIAL = 7, DEVOTED = 14;
+const trialAt = p => (p && hasBlue(p, 'devotion')) ? DEVOTED : TRIAL;
+const T = { take:35000, arrange:45000, mark:30000, save:25000, confess:25000, choose:30000, stageMin:2500, bot:1300 };
+const ct = id => String(id).split('_')[0];
+
+function cardHTML(id, cls = '', attrs = '', extra = ''){
+  const C = CARD[ct(id)];
+  return `<div class="card ${C.c} ${cls}" ${attrs}>${extra}<div class="cn">${C.n}</div>${C.pts ? `<span class="cp">${C.pts}</span>` : ''}<div class="ci">${C.i}</div><div class="ct">${C.txt}</div></div>`;
+}
+$('#showcase').innerHTML = ['testimony','defense','sanctuary','night','pact'].map(k => cardHTML(k)).join('');
+$('#allcards').innerHTML = Object.keys(CARD).map(k => cardHTML(k)).join('');
+
+/* ---------- in-memory store for offline practice ---------- */
+function makeMemDB(){
+  const data = new Map(); const subs = new Set();
+  const notify = () => setTimeout(() => subs.forEach(f => f()), 0);
+  const snap = p => { const d = data.get(p); return { id: p.split('/').pop(), exists: !!d, data: () => d ? clone(d) : undefined, metadata:{fromCache:false,hasPendingWrites:false} }; };
+  const merge = (a,b) => { for (const k in b) { if (b[k] && typeof b[k] === 'object' && !Array.isArray(b[k]) && a[k] && typeof a[k] === 'object') merge(a[k], b[k]); else a[k] = b[k]; } return a; };
+  function docRef(p){ return { id:p.split('/').pop(), path:p,
+    get: async () => snap(p),
+    set: async d => { data.set(p, clone(d)); notify(); },
+    update: async d => { if (!data.has(p)) throw {code:'invalid_argument'}; data.set(p, merge(data.get(p), clone(d))); notify(); },
+    delete: async () => { data.delete(p); notify(); },
+    onSnapshot(next){ const f = () => next(snap(p)); subs.add(f); setTimeout(f,0); return () => subs.delete(f); },
+    collection: c => collRef(p + '/' + c) }; }
+  function collRef(p, q = {w:[], o:null, l:null}){
+    const run = () => { const depth = p.split('/').length + 1;
+      let docs = [...data.keys()].filter(k => k.startsWith(p + '/') && k.split('/').length === depth).map(snap);
+      for (const [f,op,v] of q.w) docs = docs.filter(d => op === '==' ? d.data()[f] === v : true);
+      if (q.o) { const [f,dir] = q.o; docs.sort((a,b) => ((a.data()[f] > b.data()[f]) ? 1 : -1) * (dir === 'desc' ? -1 : 1)); }
+      if (q.l) docs = docs.slice(0, q.l);
+      return { docs, size: docs.length, empty: !docs.length, docChanges: () => [], metadata:{fromCache:false} }; };
+    return { path:p, where:(f,op,v) => collRef(p, {...q, w:[...q.w,[f,op,v]]}), orderBy:(f,d='asc') => collRef(p, {...q, o:[f,d]}), limit:n => collRef(p, {...q, l:n}),
+      get: async () => run(), onSnapshot(next){ const f = () => next(run()); subs.add(f); setTimeout(f,0); return () => subs.delete(f); },
+      doc: id => docRef(p + '/' + (id || Math.random().toString(36).slice(2))),
+      add: async d => { const r = docRef(p + '/' + Date.now().toString(36) + Math.random().toString(36).slice(2,6)); await r.set(d); return r; } };
+  }
+  return { doc: docRef, collection: p => collRef(p) };
+}
+
+/* ---------- state ---------- */
+let db = null, userCap = null, roomCap = null, offline = false;
+const S = { me:{ id:null }, code:null, game:null, pdocs:{}, pdocsLoaded:false, chat:[], peers:null, hostMissingSince:null, mine:null, seq:0, sentAt:0, busy:false, readOnly:false, sel:null, t1:null };
+let subs = [], roomH = null, lastChatSend = 0;
+
+function toast(t){ const el = $('#toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toast._t); toast._t = setTimeout(() => el.classList.remove('on'), 3800); }
+
+const wq = {};
+function W(path, op, data){
+  const run = () => { const r = db.doc(path); return op === 'set' ? r.set(data) : op === 'update' ? r.update(data) : r.delete(); };
+  const p = (wq[path] || Promise.resolve()).then(run, run).then(() => true, e => {
+    console.warn('write failed', path, e);
+    if (e && e.code === 'invalid_argument') { S.readOnly = true; toast('Couldn’t save to the game server. Refresh the page and try again.'); }
+    else if (e && e.code === 'quota_exceeded') toast('The village records are full.');
+    else toast('Connection hiccup. Please try again.');
+    return false;
+  });
+  wq[path] = p; return p;
+}
+const gPath = () => `games/${S.code}`;
+const pPath = (id = S.me.id) => `games/${S.code}/players/${id}`;
+const nick = () => ($('#nick').value.trim() || '').slice(0, 20);
+
+/* ---------- Firebase backend (GitHub/Vercel build) ---------- */
+// Wraps the Firebase Firestore SDK in the small doc/collection API the game engine uses.
+async function connectFirebase(cfg){
+  const V = '10.12.2', base = `https://www.gstatic.com/firebasejs/${V}/`;
+  const [app, auth, fs] = await Promise.all([import(base + 'firebase-app.js'), import(base + 'firebase-auth.js'), import(base + 'firebase-firestore.js')]);
+  const a = app.initializeApp(cfg);
+  const cred = await auth.signInAnonymously(auth.getAuth(a));
+  const f = fs.initializeFirestore(a, { ignoreUndefinedProperties: true });
+  const err = e => ({ code: e && e.code === 'permission-denied' ? 'invalid_argument' : (e && e.code === 'resource-exhausted' ? 'quota_exceeded' : 'unavailable'), message: e && e.message });
+  const wrap = p => p.catch(e => { throw err(e); });
+  const snap = s => ({ id: s.id, exists: s.exists(), data: () => s.data(), metadata: s.metadata });
+  const qsnap = q => ({ docs: q.docs.map(snap), size: q.size, empty: q.empty, docChanges: () => [], metadata: q.metadata });
+  function docRef(path){
+    const r = fs.doc(f, path);
+    return { id: r.id, path,
+      get: async () => snap(await wrap(fs.getDoc(r))),
+      set: d => wrap(fs.setDoc(r, d)), update: d => wrap(fs.updateDoc(r, d)), delete: () => wrap(fs.deleteDoc(r)),
+      onSnapshot: (n, e) => fs.onSnapshot(r, s => n(snap(s)), x => e && e(err(x))),
+      collection: c => collRef(path + '/' + c) };
+  }
+  function collRef(path, cons = []){
+    const c = fs.collection(f, path); const q = () => cons.length ? fs.query(c, ...cons) : c;
+    return { path,
+      where: (x, o, v) => collRef(path, [...cons, fs.where(x, o, v)]),
+      orderBy: (x, d) => collRef(path, [...cons, fs.orderBy(x, d || 'asc')]),
+      limit: n => collRef(path, [...cons, fs.limit(n)]),
+      get: async () => qsnap(await wrap(fs.getDocs(q()))),
+      onSnapshot: (n, e) => fs.onSnapshot(q(), s => n(qsnap(s)), x => e && e(err(x))),
+      doc: id => docRef(path + '/' + (id || fs.doc(c).id)),
+      add: async d => { const r = await wrap(fs.addDoc(c, d)); return docRef(path + '/' + r.id); } };
+  }
+  return { db: { doc: docRef, collection: p => collRef(p) }, uid: cred.user.uid };
+}
+
+/* ---------- init ---------- */
+async function init(){
+  const saved = store.get('salem.nick'); if (saved) $('#nick').value = saved;
+  const cfg = window.FIREBASE_CONFIG;
+  let id = null, problem = '';
+  if (cfg && cfg.apiKey && !/PASTE/.test(cfg.apiKey)) {
+    try { const fb = await connectFirebase(cfg); db = fb.db; id = fb.uid; }
+    catch(e) { console.error(e); problem = 'Couldn’t connect to the game server. Check your connection and refresh.'; db = null; }
+  } else problem = 'Online play isn’t set up yet: the site owner needs to add their Firebase settings to <code>firebase-config.js</code>.';
+  if (!db || !id) {
+    offline = true; db = makeMemDB(); S.me.id = 'you'; roomCap = null;
+    $('#homeNote').innerHTML = problem + ' <b>For now you can practise against bots.</b>';
+    $('#createBtn').textContent = 'Practise against bots';
+    $('#joinBtn').closest('.row').hidden = true;
+    $('#lobbies').innerHTML = '<span class="empty">Open games appear here when you play online.</span>';
+  } else {
+    S.me.id = safeId(id);
+    $('#homeNote').textContent = 'Create a game and share its invite link, or join a friend’s.';
+    watchLobbies();
+  }
+  $('#createBtn').disabled = false; $('#joinBtn').disabled = false;
+  const h = location.hash.slice(1).toUpperCase();
+  if (!offline && /^[A-Z]{4}$/.test(h)) {
+    $('#codeIn').value = h;
+    if (nick()) joinGame(h);
+    else { $('#homeNote').innerHTML = `You’ve been invited to game <b>${h}</b>. Enter your name and press Join.`; $('#nick').focus(); }
+  }
+}
+
+function watchLobbies(){
+  db.collection('games').where('phase','==','lobby').limit(60).onSnapshot(sn => {
+    const now = Date.now();
+    const list = sn.docs.map(d => d.data()).filter(g => g && g.code && now - (g.updatedAt || 0) < 3 * 3600e3).sort((a,b) => (b.updatedAt||0) - (a.updatedAt||0));
+    $('#lobbies').innerHTML = list.length ? list.map(g => {
+      const n = Object.keys(g.players || {}).length; const host = (g.players || {})[g.host];
+      return `<div class="lob"><span class="code">${esc(g.code)}</span><span class="who">${esc(host ? host.name : 'Someone')}’s game · ${n} player${n === 1 ? '' : 's'}</span><button data-join="${esc(g.code)}">Join</button></div>`;
+    }).join('') : '<span class="empty">No open games right now. Create one!</span>';
+  }, () => { $('#lobbies').innerHTML = '<span class="empty">Couldn’t load open games.</span>'; });
+}
+
+/* ---------- create / join / leave ---------- */
+function needNick(){ const n = nick(); if (!n) { toast('Choose your name first.'); $('#nick').focus(); return null; } store.set('salem.nick', n); return n; }
+function genCode(){ const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; let s = ''; for (let i = 0; i < 4; i++) s += A[randInt(A.length)]; return s; }
+
+async function createGame(){
+  const name = needNick(); if (!name) return;
+  $('#createBtn').disabled = true;
+  let code = genCode();
+  for (let i = 0; i < 5; i++) { const s = await db.doc('games/' + code).get().catch(() => null); if (!s || !s.exists) break; code = genCode(); }
+  const now = Date.now();
+  const g = { code, host:S.me.id, phase:'lobby', settings:{ turn:60 }, players:{ [S.me.id]:{ name, bot:false, joined:now } }, seen:{}, log:[], createdAt:now, updatedAt:now };
+  const ok = await W('games/' + code, 'set', g);
+  $('#createBtn').disabled = false;
+  if (!ok) return;
+  await enterGame(code, g);
+  if (offline) for (let i = 0; i < 5; i++) addBot();
+}
+
+async function joinGame(code){
+  const name = needNick(); if (!name) return;
+  code = String(code || '').toUpperCase().trim();
+  if (!/^[A-Z]{4}$/.test(code)) return toast('Codes are 4 letters.');
+  const s = await db.doc('games/' + code).get().catch(() => null);
+  if (!s || !s.exists) return toast('No game found with that code.');
+  const g = s.data(); if (g.phase === 'closed') return toast('That game has ended.');
+  enterGame(code, g);
+}
+
+async function enterGame(code, g){
+  fxSeen = null; fxBusyUntil = 0;
+  Object.assign(S, { code, game:g, pdocs:{}, pdocsLoaded:false, chat:[], peers:null, hostMissingSince:null, sel:null, t1:null });
+  S.seq = (g.seen || {})[S.me.id] || 0;
+  S.mine = { name: nick(), joinedAt: Date.now(), seq:S.seq, intent:null };
+  W(pPath(), 'set', clone(S.mine));
+  $('#home').hidden = true; $('#game').hidden = false; document.body.classList.add('ingame'); $('#sideBtn').hidden = false; $('#leaveTop').hidden = false;
+  if (!offline) { try { history.replaceState(null, '', '#' + code); } catch(e) {} }
+  subs.push(db.doc(gPath()).onSnapshot(sn => { if (sn.exists) { S.game = sn.data(); render(); } }, () => toast('Lost connection to the game.')));
+  subs.push(db.collection(`games/${code}/players`).onSnapshot(sn => {
+    const m = {}; sn.docs.forEach(d => { m[d.id] = d.data(); }); S.pdocs = m; if (!sn.metadata || !sn.metadata.fromCache) S.pdocsLoaded = true; render();
+  }));
+  subs.push(db.collection(`games/${code}/chat`).orderBy('ts','desc').limit(150).onSnapshot(sn => { S.chat = sn.docs.map(d => d.data()).reverse(); renderChat(); }));
+  if (roomCap && typeof roomCap.join === 'function') {
+    try {
+      roomH = await roomCap.join('salem-' + code);
+      if (roomH) { try { roomH.presence({ uid:S.me.id }); } catch(e) {} try { roomH.onPeers(p => { S.peers = Array.isArray(p) ? p : Object.values(p || {}); }); } catch(e) {} }
+    } catch(e) { roomH = null; }
+  }
+  render();
+}
+
+async function leaveGame(){
+  const g = S.game;
+  if (g && g.host === S.me.id && g.phase === 'lobby') {
+    const others = Object.entries(g.players).filter(([id,p]) => !p.bot && id !== S.me.id).sort((a,b) => a[1].joined - b[1].joined);
+    await W(gPath(), 'update', others.length ? { host: others[0][0], updatedAt: Date.now() } : { phase:'closed', updatedAt: Date.now() });
+  }
+  W(pPath(), 'delete');
+  subs.forEach(u => { try { u(); } catch(e) {} }); subs = [];
+  if (roomH) { try { roomH.leave(); } catch(e) {} roomH = null; }
+  S.code = null; S.game = null;
+  document.body.classList.remove('night');
+  $('#game').hidden = true; $('#home').hidden = false; document.body.classList.remove('ingame'); $('#sideBtn').hidden = true; $('#leaveTop').hidden = true; $('#side').classList.remove('open'); $('#phase').innerHTML = ''; $('#phase')._h = '';
+  try { history.replaceState(null, '', location.pathname + location.search); } catch(e) {}
+}
+
+/* ---------- rules helpers ---------- */
+const order = g => g.order || Object.keys(g.players).sort((a,b) => (g.players[a].joined||0) - (g.players[b].joined||0));
+const living = g => order(g).filter(id => g.players[id].alive);
+const nm = (g,id) => (g.players[id] ? g.players[id].name : 'Someone');
+const hidden = p => (p && p.secrets ? p.secrets.map((s,i) => s.up ? -1 : i).filter(i => i >= 0) : []);
+// holdsWitch: has a face-down Witch trial card right now. isWitch: belongs to the coven (once a witch, always a witch).
+const holdsWitch = p => !!(p && p.alive && p.secrets && p.secrets.some(s => s.t === 'witch' && !s.up));
+const isWitch = p => !!(p && p.alive && (p.coven || holdsWitch(p)));
+const markCoven = g => Object.values(g.players).forEach(p => { if (holdsWitch(p)) p.coven = true; });
+const isConst = p => !!(p && p.alive && p.secrets && p.secrets.some(s => s.t === 'constable'));
+// The other living player who also has a Bound Souls card in front of them (the two are linked).
+const boundPartner = (g, uid) => Object.keys(g.players).find(id => id !== uid && g.players[id].alive && hasBlue(g.players[id], 'bound')) || null;
+const ravenHolder = g => living(g).find(id => hasBlue(g.players[id], 'raven')) || null;
+const accPts = p => (p.table || []).reduce((a,x) => a + (CARD[ct(x.id)].pts || 0), 0);
+const hasBlue = (p,t) => (p.table || []).some(x => ct(x.id) === t);
+const colorOf = (g,id) => COLORS[Math.max(0, order(g).indexOf(id)) % COLORS.length];
+const lg = (g, t, k = '') => { g.log.push({ t, k }); if (g.log.length > 90) g.log = g.log.slice(-90); };
+
+function validPlay(g, uid, card, t1, t2){
+  const P = g.players, type = ct(card), C = CARD[type], a = P[t1];
+  if (!a || !a.alive) return false;
+  if (t1 === uid || (C.two && t2 === uid)) return false; // house rule: no card from your hand may target yourself
+  if (C.two && (!P[t2] || !P[t2].alive || t1 === t2)) return false;
+  switch (type) {
+    case 'rumor': case 'testimony': case 'eyewitness': return t1 !== uid;
+    case 'defense': return accPts(a) > 0;
+    case 'pillory': return t1 !== uid && !hasBlue(a,'pillory');
+    case 'fire': return t1 !== uid && a.hand.length > 0;
+    case 'hexbreaker': return a.table.some(x => CARD[ct(x.id)].c === 'blue');
+    case 'thievery': return a.hand.filter(c => c !== card).length > 0;
+    case 'blame': return a.table.length > 0;
+    case 'sanctuary': case 'devotion': case 'raven': return !hasBlue(a, type);
+    case 'bound': return !hasBlue(a,'bound');
+  }
+  return false;
+}
+// Can t1 be a first target for this card (ignoring second target)?
+function validFirst(g, uid, card, t1){
+  if (!CARD[ct(card)].two) return validPlay(g, uid, card, t1);
+  return living(g).some(t2 => t2 !== t1 && validPlay(g, uid, card, t1, t2));
+}
+
+/* ---------- engine (runs on host) ---------- */
+function drawOne(g){
+  if (!g.deck.length) { if (!g.discard.length) return null; const c = g.discard.length; g.deck = shuffle(g.discard); g.discard = []; fx(g, { t:'shuffle', c }); lg(g, 'The discard pile is shuffled back into the deck.', 'n'); }
+  return g.deck.shift();
+}
+// Animation events: the host appends these to the game state; every client plays the new ones.
+function fx(g, e){ g.fxN = (g.fxN || 0) + 1; e.n = g.fxN; (g.fx = g.fx || []).push(e); if (g.fx.length > 30) g.fx = g.fx.slice(-30); }
+function discardCard(g, id){ if (id && !String(id).endsWith('~')) g.discard.push(id); }
+
+function kill(g, uid, why, opts = {}){
+  const p = g.players[uid]; if (!p || !p.alive) return;
+  // Once a witch, always a witch: a witch who passed on their Witch card still dies a witch.
+  const wasWitch = isWitch(p), heldCard = p.secrets.some(s => s.t === 'witch');
+  p.wasWitch = wasWitch;
+  p.alive = false; p.secrets.forEach(s => s.up = true); fx(g, { t:'death', p:uid, w: wasWitch, passed: wasWitch && !heldCard, night: !!opts.night });
+  lg(g, `${p.name} ${why}. Their trial cards: ${p.secrets.map(s => SECRET[s.t].n).join(', ')}.`, 'd');
+  lg(g, wasWitch ? `${p.name} was a WITCH.${heldCard ? '' : ' They no longer held a Witch card, so it was passed on during the Pact: one of the other players now has it.'}` : `${p.name} was not a witch.`, wasWitch ? 'w' : 'n');
+  p.hand.forEach(c => discardCard(g, c)); p.hand = [];
+  const partner = hasBlue(p, 'bound') ? boundPartner(g, uid) : null;
+  if (p.table.length) fx(g, { t:'sweep', p:uid, ids: p.table.map(x => x.id) });
+  p.table.forEach(x => discardCard(g, x.id));
+  p.table = []; p.skip = false;
+  if (partner) kill(g, partner, `was bound to ${p.name} and followed them to the grave`); // Bound Souls ignores Sanctuary
+}
+function reveal(g, uid, idx, how){
+  const p = g.players[uid]; const s = p && p.secrets[idx]; if (!s || s.up || !p.alive) return;
+  s.up = true; fx(g, { t:'flip', p:uid, k:s.k });
+  lg(g, `${p.name} ${how}: ${SECRET[s.t].i} ${SECRET[s.t].n}.`, s.t === 'witch' ? 'w' : '');
+  if (s.t === 'witch') kill(g, uid, 'was exposed as a witch and hanged');
+  else if (!hidden(p).length) kill(g, uid, 'has no hidden trial cards left, and is hanged');
+}
+function checkTrial(g, by, t){
+  if (!g.pending && g.players[t].alive && accPts(g.players[t]) >= trialAt(g.players[t])) {
+    g.pending = { type:'trial', chooser:by, target:t, deadline:Date.now() + T.choose, at:Date.now() };
+    fx(g, { t:'trial', p:t });
+    lg(g, `${nm(g,t)} is brought to trial! ${nm(g,by)} chooses a trial card to reveal.`);
+  }
+}
+
+function doPlay(g, uid, card, t1, t2){
+  const P = g.players, me = P[uid], a = P[t1], b = t2 ? P[t2] : null, type = ct(card), C = CARD[type];
+  me.hand.splice(me.hand.indexOf(card), 1);
+  g.acted = 'played';
+  fx(g, { t:'play', p:uid, card, a:t1, b:t2 || null, c: (type === 'fire' || type === 'thievery') ? a.hand.filter(x => x !== card).length : 0, mv: type === 'blame' ? a.table.map(x => x.id) : undefined });
+  const tgt = C.two ? `${a.name} and ${b.name}` : (t1 === uid ? 'themselves' : a.name);
+  if (C.c === 'red') { a.table.push({ id:card, by:uid }); lg(g, `${me.name} plays ${C.n} on ${a.name} (${accPts(a)}/${trialAt(a)}).`); checkTrial(g, uid, t1); return; }
+  lg(g, `${me.name} plays ${C.n} on ${tgt}.`);
+  if (type === 'bound') { const o = boundPartner(g, t1); if (o) lg(g, `${a.name} and ${P[o].name} are now Bound Souls: if one dies, so does the other.`, 'n'); }
+  switch (type) {
+    case 'defense': { let budget = 3; const reds = a.table.filter(x => CARD[ct(x.id)].c === 'red').sort((x,y) => CARD[ct(y.id)].pts - CARD[ct(x.id)].pts);
+      const gone = []; reds.forEach(x => { const v = CARD[ct(x.id)].pts; if (v <= budget) { budget -= v; a.table.splice(a.table.indexOf(x), 1); discardCard(g, x.id); gone.push(x.id); } }); discardCard(g, card);
+      if (gone.length) fx(g, { t:'sweep', p:t1, ids:gone }); break; }
+    case 'pillory': a.table.push({ id:card }); a.skip = true; break;
+    case 'fire': a.hand.forEach(c => discardCard(g, c)); a.hand = []; discardCard(g, card); break;
+    case 'hexbreaker': { const blues = a.table.filter(x => CARD[ct(x.id)].c === 'blue'); const x = blues[blues.length - 1];
+      a.table.splice(a.table.indexOf(x), 1); discardCard(g, x.id); discardCard(g, card); checkTrial(g, uid, t1); break; }
+    case 'thievery': b.hand.push(...a.hand); a.hand = []; discardCard(g, card); break;
+    case 'blame': {
+      const moving = a.table; a.table = [];
+      moving.forEach(x => {
+        if (CARD[ct(x.id)].c === 'blue' && hasBlue(b, ct(x.id))) { discardCard(g, x.id); return; }
+        b.table.push(x);
+      });
+      if (a.skip) { a.skip = false; b.skip = true; }
+      discardCard(g, card); checkTrial(g, uid, t2); break; }
+    case 'sanctuary': case 'devotion': case 'raven': case 'bound': a.table.push({ id:card }); break;
+  }
+}
+
+function endTurn(g, now){
+  g.acted = 'none'; g.played = 0;
+  const o = order(g); let i = o.indexOf(g.turn);
+  for (let k = 0; k < o.length * 2; k++) {
+    i = (i + 1) % o.length; const p = g.players[o[i]];
+    if (!p.alive) continue;
+    if (p.skip) { p.skip = false; const x = p.table.find(c => ct(c.id) === 'pillory'); if (x) { p.table.splice(p.table.indexOf(x), 1); discardCard(g, x.id); } lg(g, `${p.name} sits in the pillory and loses a turn.`); continue; }
+    break;
+  }
+  g.turn = o[i]; g.deadline = now + g.settings.turn * 1000; g.stepAt = now;
+}
+
+function doDraw(g, uid, now){
+  g.acted = 'drew'; let got = 0;
+  for (let k = 0; k < 2; k++) {
+    const c = drawOne(g); if (!c) break;
+    if (ct(c) === 'night') {
+      if (got) fx(g, { t:'draw', p:uid, c:got });
+      fx(g, { t:'special', p:uid, card:'night' });
+      lg(g, `${nm(g,uid)} draws Night Falls. The village sleeps…`, 'n');
+      g.pending = { type:'night', stage:'mark', votes:{}, save:null, conf:{}, mark:null, deadline: now + T.mark, at: now, card:c };
+      return;
+    }
+    if (ct(c) === 'pact') {
+      if (got) fx(g, { t:'draw', p:uid, c:got });
+      fx(g, { t:'special', p:uid, card:'pact' });
+      const r = ravenHolder(g), ok = r && g.players[r].alive && hidden(g.players[r]).length;
+      lg(g, `${nm(g,uid)} draws The Pact.${ok ? (r === uid ? ` ${nm(g,uid)} holds the Raven, so a random trial card of theirs is revealed.` : ` ${nm(g,uid)} must reveal a trial card of ${nm(g,r)}, who holds the Raven.`) : ''}`, 'n');
+      g.pending = { type:'pact', chooser:uid, target: ok ? r : null, deadline: now + T.choose, at: now, card:c };
+      return;
+    }
+    g.players[uid].hand.push(c); got++;
+  }
+  if (got) fx(g, { t:'draw', p:uid, c:got });
+  lg(g, `${nm(g,uid)} draws ${got} card${got === 1 ? '' : 's'}.`);
+  endTurn(g, now);
+}
+
+// Who each living player takes from during the Pact: the next living player in turn order (the player on their left).
+const giverOf = (g, uid) => { const A = living(g); const i = A.indexOf(uid); return i < 0 || A.length < 2 ? null : A[(i + 1) % A.length]; };
+function passSecrets(g, chosen = {}){
+  const A = living(g); if (A.length < 2) return;
+  const picks = A.map((taker, i) => { const giver = A[(i + 1) % A.length]; const h = hidden(g.players[giver]); if (!h.length) return null;
+    const want = g.players[giver].secrets.findIndex(sc => sc.k === chosen[taker]); return { taker, giver, idx: h.includes(want) ? want : rnd(h) }; }).filter(Boolean);
+  const taken = picks.map(p => ({ ...p, card: g.players[p.giver].secrets[p.idx] }));
+  taken.forEach(p => { p.card._mv = true; });
+  A.forEach(id => { g.players[id].secrets = g.players[id].secrets.filter(s => !s._mv); });
+  taken.forEach(p => { delete p.card._mv; g.players[p.taker].secrets.push(p.card); });
+  fx(g, { t:'pass', m: taken.map(p => ({ from: p.giver, to: p.taker, k: p.card.k })) }); // objects, not nested arrays (Firestore-safe)
+  markCoven(g);
+  lg(g, 'Under the Pact, every villager has taken a face-down trial card from the player on their left. Some hearts have changed…', 'n');
+  A.forEach(id => { const p = g.players[id]; if (p.alive && !hidden(p).length) kill(g, id, 'was left with no hidden trial cards'); });
+}
+
+function resolveTrial(g, idx){
+  const pd = g.pending, t = g.players[pd.target]; g.pending = null;
+  if (!t || !t.alive) return;
+  const h = hidden(t); if (!h.includes(idx)) idx = rnd(h);
+  const gone = t.table.filter(x => CARD[ct(x.id)].c === 'red').map(x => x.id);
+  t.table = t.table.filter(x => { if (CARD[ct(x.id)].c === 'red') { discardCard(g, x.id); return false; } return true; });
+  if (gone.length) fx(g, { t:'sweep', p:pd.target, ids:gone });
+  reveal(g, pd.target, idx, 'is tried and a trial card is turned');
+}
+function resolvePact(g, idx, now){
+  const pd = g.pending; g.pending = null;
+  if (pd.target && g.players[pd.target].alive) { const h = hidden(g.players[pd.target]); if (h.length) reveal(g, pd.target, h.includes(idx) ? idx : rnd(h), 'holds the Raven and must reveal a trial card'); }
+  checkWin(g); if (g.winner) return;
+  g.pending = { type:'take', picks:{}, deadline: now + T.take, at: now, card: pd.card };
+  lg(g, 'Now every villager must take one face-down trial card from the player on their left.', 'n');
+}
+function resolveTake(g, now){
+  const pd = g.pending; g.pending = null;
+  passSecrets(g, pd.picks);
+  discardCard(g, pd.card);
+  if (!g.winner) endTurn(g, now);
+}
+function tallyVotes(votes){ const t = {}; Object.values(votes).forEach(v => { if (v) t[v] = (t[v] || 0) + 1; }); return t; }
+// Most votes wins; a tie is broken at random among the tied choices; with no votes at all, anyone eligible.
+function plurality(votes, fallback){ return voteResult(votes, fallback).pick; }
+function voteResult(votes, fallback){
+  const e = Object.entries(tallyVotes(votes));
+  if (!e.length) return { pick: fallback.length ? rnd(fallback) : null, tie: false, none: true };
+  const max = Math.max(...e.map(x => x[1])), best = e.filter(x => x[1] === max).map(x => x[0]);
+  return { pick: rnd(best), tie: best.length > 1, tied: best, none: false };
+}
+function resolveNight(g, now){
+  const pd = g.pending; const P = g.players; g.pending = null;
+  const m = pd.mark, confessed = Object.entries(pd.conf).filter(([id, i]) => i >= 0 && P[id] && P[id].alive).map(([id]) => id);
+  // What dawn reveals, announced to everyone before the confessions flip and the dead fall.
+  let res = 'none';
+  if (m && P[m] && P[m].alive) res = pd.save === m ? 'guarded' : confessed.includes(m) ? 'confessed' : hasBlue(P[m], 'sanctuary') ? 'sanctuary' : 'killed';
+  const saved = pd.save && P[pd.save] && P[pd.save].alive ? pd.save : null;
+  const mw = res === 'killed' ? isWitch(P[m]) : false, mPassed = mw && !P[m].secrets.some(x => x.t === 'witch');
+  fx(g, { t:'dawn', res, p: res === 'none' ? null : m, conf: confessed, save: saved, w: mw, passed: mPassed });
+  lg(g, saved ? `The Constable protected ${P[saved].name} tonight.` : 'No one was protected by the Constable tonight.', 'n');
+  const silent = living(g).filter(id => !confessed.includes(id));
+  lg(g, `At dawn — confessed: ${confessed.length ? confessed.map(id => P[id].name).join(', ') : 'no one'}. Did not confess: ${silent.length ? silent.map(id => P[id].name).join(', ') : 'no one'}.`, 'n');
+  confessed.forEach(id => reveal(g, id, pd.conf[id], 'confesses at dawn, revealing'));
+  if (m && P[m] && P[m].alive) {
+    if (pd.save === m) lg(g, `The coven attacked ${P[m].name}, but the Constable protected them. No one died.`, 'n');
+    else if (pd.conf[m] !== undefined && pd.conf[m] >= 0) lg(g, `The coven attacked ${P[m].name}, but their confession saved them.`, 'n');
+    else if (hasBlue(P[m], 'sanctuary')) lg(g, `The coven attacked ${P[m].name}, but they slept in Sanctuary.`, 'n');
+    else kill(g, m, 'was killed in the night, having not confessed', { night: true });
+  } else lg(g, 'The coven attacked no one. No one died in the night.', 'n');
+  const back = g.discard.length;
+  g.deck = shuffle(shuffle(g.deck.concat(g.discard))); g.discard = [];
+  g.deck.splice(nightSpot(g.deck.length), 0, pd.card);
+  fx(g, { t:'shuffle', c: back });
+  lg(g, `The night is over: the discard pile${back ? ` (${back} card${back === 1 ? '' : 's'})` : ''} is shuffled back into the deck, and Night Falls returns among the last 10 cards.`, 'n');
+  if (!g.winner) endTurn(g, now);
+}
+
+function checkWin(g){
+  if (g.phase !== 'play' || g.winner) return;
+  const A = living(g);
+  let w = null;
+  if (!A.some(id => holdsWitch(g.players[id]))) w = 'town'; // every Witch card is exposed
+  else if (A.every(id => isWitch(g.players[id]))) w = 'witches';
+  if (w) { g.winner = w; g.phase = 'over'; g.pending = null; fx(g, { t:'win', w }); lg(g, w === 'town' ? 'Every Witch trial card has been exposed. The town of Salem is saved!' : 'Only the coven remains. Salem belongs to the witches.', w === 'town' ? '' : 'w'); }
+}
+
+function stageTick(g, now){
+  const pd = g.pending; if (!pd) return false; const P = g.players;
+  if (pd.type === 'trial' || pd.type === 'pact') {
+    const c = P[pd.chooser]; const tgt = pd.target ? P[pd.target] : null;
+    const auto = !c || !c.alive || now > pd.deadline || (c.bot && now - pd.at > T.bot) || (pd.type === 'pact' && (!pd.target || pd.chooser === pd.target) && now - pd.at > T.bot);
+    if (!auto) return false;
+    const h = hidden(tgt); const idx = h.length ? rnd(h) : -1;
+    if (pd.type === 'trial') resolveTrial(g, idx); else resolvePact(g, idx, now);
+    return true;
+  }
+  if (pd.type === 'take') {
+    let ch = false; const A = living(g);
+    const need = A.filter(id => { const gv = giverOf(g, id); return gv && hidden(P[gv]).length; });
+    need.filter(id => P[id].bot && !pd.picks[id]).forEach(id => { const gv = P[giverOf(g, id)]; pd.picks[id] = gv.secrets[rnd(hidden(gv))].k; ch = true; });
+    const done = now - pd.at > T.stageMin && (need.every(id => pd.picks[id]) || now > pd.deadline);
+    if (!done) return ch;
+    resolveTake(g, now); return true;
+  }
+  if (pd.type === 'arrange') {
+    let ch = false; const A = living(g);
+    A.filter(id => P[id].bot && !pd.ready[id]).forEach(id => { P[id].secrets = shuffle(P[id].secrets); pd.ready[id] = true; ch = true; });
+    const done = now - pd.at > T.stageMin + 1500 && (A.every(id => pd.ready[id]) || now > pd.deadline);
+    if (!done) return ch;
+    g.pending = { type:'raven', votes:{}, deadline: now + T.mark, at: now };
+    lg(g, 'The first night falls. The coven chooses where the Raven settles.', 'n');
+    fx(g, { t:'special', card:'night', first:true });
+    return true;
+  }
+  if (pd.type === 'raven' || (pd.type === 'night' && pd.stage === 'mark')) {
+    let ch = false; const A = living(g); const W = A.filter(id => isWitch(P[id]));
+    const targets = pd.type === 'raven' ? A : A.filter(id => !isWitch(P[id]));
+    W.filter(id => P[id].bot && !pd.votes[id]).forEach(id => {
+      const pool = pd.type === 'raven' ? targets.filter(t => !isWitch(P[t])) : targets;
+      pd.votes[id] = pool.length ? rnd(pool) : rnd(targets); ch = true; });
+    const done = now - pd.at > T.stageMin && (W.every(id => pd.votes[id]) || now > pd.deadline);
+    if (!done) return ch;
+    const valid = {}; Object.entries(pd.votes).forEach(([v,t]) => { if (W.includes(v) && targets.includes(t)) valid[v] = t; });
+    const vr = voteResult(valid, targets), target = vr.pick;
+    fx(g, { t:'covenpick', kind: pd.type, p: target, tie: vr.tie, tied: vr.tied || [], none: vr.none, solo: W.length === 1 });
+    if (pd.type === 'raven') {
+      P[target].table.push({ id:'raven_0' }); g.pending = null; fx(g, { t:'raven', p:target });
+      lg(g, `Morning comes. A Raven has settled on ${nm(g, target)}’s windowsill.`, 'n');
+      g.turn = rnd(A); g.acted = 'none'; g.deadline = now + g.settings.turn * 1000; g.stepAt = now;
+      lg(g, `${nm(g, g.turn)} takes the first turn.`);
+    } else {
+      pd.mark = target; pd.at = now;
+      const c = A.find(id => isConst(P[id]));
+      if (c) { pd.stage = 'save'; pd.deadline = now + T.save; } else { pd.stage = 'confess'; pd.deadline = now + T.confess; }
+    }
+    return true;
+  }
+  if (pd.type === 'night' && pd.stage === 'save') {
+    const A = living(g); const c = A.find(id => isConst(P[id]));
+    if (c && P[c].bot && pd.save == null) { pd.save = rnd(A.filter(id => id !== c)) || null; }
+    const done = now - pd.at > T.stageMin && (!c || pd.save != null || now > pd.deadline);
+    if (!done) return false;
+    pd.stage = 'confess'; pd.at = now; pd.deadline = now + T.confess; return true;
+  }
+  if (pd.type === 'night' && pd.stage === 'confess') {
+    let ch = false; const A = living(g);
+    A.filter(id => P[id].bot && pd.conf[id] === undefined).forEach(id => {
+      const inn = hidden(P[id]).filter(i => P[id].secrets[i].t !== 'witch');
+      pd.conf[id] = inn.length > 1 && rand() < 0.35 ? rnd(inn) : -1; ch = true; });
+    const done = now - pd.at > T.stageMin && (A.every(id => pd.conf[id] !== undefined) || now > pd.deadline);
+    if (!done) return ch;
+    resolveNight(g, now); return true;
+  }
+  return false;
+}
+
+function botTurn(g, now){
+  const P = g.players, uid = g.turn, me = P[uid];
+  if (g.pending || !me || !me.bot || !me.alive || now - (g.stepAt || 0) < T.bot) return false;
+  g.stepAt = now;
+  const A = living(g), others = A.filter(id => id !== uid), witch = isWitch(me);
+  const pickTarget = () => {
+    let pool = others.slice();
+    if (witch) { const inn = pool.filter(id => !isWitch(P[id])); if (inn.length) pool = inn; }
+    if (!pool.length) return null;
+    pool.sort((a,b) => accPts(P[b]) - accPts(P[a]) + (rand() - 0.5) * 6);
+    return pool[0];
+  };
+  const tries = [];
+  // Help someone else: witches shield fellow witches, the town shields whoever is most accused.
+  const friends = others.filter(id => witch ? isWitch(P[id]) : !isWitch(P[id]) || rand() < 0.5);
+  const mostAccused = friends.slice().sort((x, y) => accPts(P[y]) - accPts(P[x]))[0];
+  if (mostAccused && accPts(P[mostAccused]) >= 4) { const d = me.hand.find(c => ct(c) === 'defense'); if (d) tries.push([d, mostAccused]); }
+  const san = me.hand.find(c => ct(c) === 'sanctuary' || ct(c) === 'devotion');
+  if (san && friends.length && rand() < 0.5) { const pool = friends.filter(id => !hasBlue(P[id], ct(san))); if (pool.length) tries.push([san, rnd(pool)]); }
+  const rv = me.hand.find(c => ct(c) === 'raven');
+  if (rv) { const pool = others.filter(id => !hasBlue(P[id], 'raven') && !(witch && isWitch(P[id]))); if (pool.length) tries.push([rv, rnd(pool)]); }
+  const reds = me.hand.filter(c => CARD[ct(c)].c === 'red');
+  if (reds.length && (g.played || 0) < 3) { const t = pickTarget(); if (t) tries.push([rnd(reds), t]); }
+  if (g.acted === 'none' && (!tries.length || rand() < 0.3)) { doDraw(g, uid, now); return true; }
+  for (const [c, t] of tries) if (validPlay(g, uid, c, t)) { doPlay(g, uid, c, t); g.played = (g.played || 0) + 1; return true; }
+  if (g.acted === 'none') doDraw(g, uid, now); else endTurn(g, now);
+  return true;
+}
+
+function applyIntent(g, uid, it, now){
+  if (!it || !it.a) return;
+  const P = g.players, me = P[uid], pd = g.pending;
+  if (!me || !me.alive) return;
+  switch (it.a) {
+    case 'draw': if (!pd && g.turn === uid && g.acted === 'none') doDraw(g, uid, now); break;
+    case 'play': {
+      if (pd || g.turn !== uid || g.acted === 'drew' || !me.hand.includes(it.card)) break;
+      const type = ct(it.card), n = MULTI.has(type) ? Math.max(1, Math.min(10, it.n | 0 || 1)) : 1;
+      for (let k = 0; k < n; k++) {
+        const c = k === 0 ? it.card : me.hand.find(x => ct(x) === type); // further copies of the same card
+        if (!c || g.pending || !validPlay(g, uid, c, it.t1, it.t2)) break; // a trial stops the volley; the rest stay in hand
+        doPlay(g, uid, c, it.t1, it.t2); g.played = (g.played || 0) + 1;
+      }
+      g.stepAt = now; break;
+    }
+    case 'end': if (!pd && g.turn === uid && g.acted === 'played') endTurn(g, now); break;
+    case 'reveal': if (pd && pd.type === 'trial' && pd.chooser === uid) resolveTrial(g, it.idx); break;
+    case 'pact': if (pd && pd.type === 'pact' && pd.chooser === uid) resolvePact(g, it.idx, now); break;
+    case 'mark': if (pd && (pd.type === 'raven' || (pd.type === 'night' && pd.stage === 'mark')) && isWitch(me) && P[it.t] && P[it.t].alive) pd.votes[uid] = it.t; break;
+    case 'save': if (pd && pd.type === 'night' && pd.stage === 'save' && isConst(me) && it.t !== uid && P[it.t] && P[it.t].alive) pd.save = it.t; break;
+    case 'take': {
+      if (!pd || pd.type !== 'take' || pd.picks[uid]) break;
+      const gv = giverOf(g, uid); if (!gv) break;
+      const sc = P[gv].secrets.find(x => x.k === it.k); if (sc && !sc.up) pd.picks[uid] = it.k; break;
+    }
+    case 'arrange': {
+      if (!pd || pd.type !== 'arrange' || !Array.isArray(it.order)) break;
+      const byK = {}; me.secrets.forEach(sc => { byK[sc.k] = sc; });
+      if (it.order.length !== me.secrets.length || it.order.some(k => !byK[k]) || new Set(it.order).size !== it.order.length) break;
+      me.secrets = it.order.map(k => byK[k]); pd.ready[uid] = true; break;
+    }
+    case 'confess': if (pd && pd.type === 'night' && pd.stage === 'confess' && pd.conf[uid] === undefined && (it.idx === -1 || hidden(me).includes(it.idx))) pd.conf[uid] = it.idx; break;
+  }
+}
+
+function hostTick(){
+  const g0 = S.game; if (!g0 || g0.host !== S.me.id || S.busy || S.readOnly) return;
+  if (!roomH && !offline && Date.now() - (g0.hb || 0) > 20000 && ['lobby','play','over'].includes(g0.phase)) { S.busy = true; const hb = Date.now(); S.game = { ...g0, hb }; W(gPath(), 'update', { hb }).finally(() => { S.busy = false; }); return; }
+  if (g0.phase === 'lobby') { syncRoster(); return; }
+  if (g0.phase !== 'play') return;
+  const g = clone(g0), now = Date.now(); let ch = false; g.seen = g.seen || {};
+  for (const [uid, d] of Object.entries(S.pdocs)) {
+    if (!g.players[uid] || !d) continue; const seq = d.seq || 0;
+    if (seq > (g.seen[uid] || 0)) { g.seen[uid] = seq; ch = true; try { applyIntent(g, uid, d.intent, now); } catch(e) { console.warn(e); } checkWin(g); }
+  }
+  if (g.phase === 'play') {
+    if (stageTick(g, now)) ch = true; checkWin(g);
+    if (g.phase === 'play' && botTurn(g, now)) ch = true; checkWin(g);
+    if (g.phase === 'play' && !g.pending && now > g.deadline) {
+      const p = g.players[g.turn];
+      if (!p || !p.alive) endTurn(g, now); else if (g.acted === 'none') doDraw(g, g.turn, now); else endTurn(g, now);
+      ch = true; checkWin(g);
+    }
+  }
+  if (!ch) return;
+  g.updatedAt = now; S.busy = true; S.game = g; render();
+  W(gPath(), 'set', g).finally(() => { S.busy = false; });
+}
+
+function stable(o){ return JSON.stringify(Object.keys(o).sort().map(k => [k, o[k]])); }
+function syncRoster(){
+  const g = S.game; if (!S.pdocsLoaded) return;
+  const next = {};
+  for (const [id,p] of Object.entries(g.players)) if (p.bot) next[id] = p;
+  for (const [id,d] of Object.entries(S.pdocs)) { if (!d || !d.name) continue; next[id] = { name:String(d.name).slice(0,20), bot:false, joined:d.joinedAt || Date.now() }; }
+  if (!next[S.me.id] && g.players[S.me.id]) next[S.me.id] = g.players[S.me.id];
+  const keep = Object.keys(next).sort((a,b) => next[a].joined - next[b].joined).slice(0, MAXP);
+  const capped = {}; keep.forEach(id => capped[id] = next[id]);
+  if (stable(capped) !== stable(g.players)) { S.busy = true; const ng = { ...g, players:capped, updatedAt:Date.now() }; S.game = ng; W(gPath(), 'set', ng).finally(() => { S.busy = false; }); }
+}
+
+function addBot(){
+  const g = S.game; if (!g || Object.keys(g.players).length >= MAXP) return toast('The village is full.');
+  const used = new Set(Object.values(g.players).map(p => p.name));
+  const name = BOT_NAMES.find(n => !used.has(n)) || ('Neighbour ' + Math.floor(Math.random()*99));
+  const players = clone(g.players); players['bot-' + Math.random().toString(36).slice(2,8)] = { name, bot:true, joined:Date.now() };
+  saveRoster(players);
+}
+function removeBot(id){ const players = clone(S.game.players); delete players[id]; saveRoster(players); }
+// Roster changes must replace the whole document: update() merges nested objects, so a removed key would survive.
+function saveRoster(players){ const ng = { ...S.game, players, updatedAt:Date.now() }; S.game = ng; render(); W(gPath(), 'set', ng); }
+
+function startGame(){
+  const g = clone(S.game); const o = Object.keys(g.players).sort((a,b) => g.players[a].joined - g.players[b].joined);
+  const n = o.length; if (n < MINP) return toast(`You need at least ${MINP} players. Add bots to fill seats.`);
+  const per = n <= 5 ? 5 : n <= 7 ? 4 : 3, w = n <= 5 ? 1 : 2;
+  const secrets = shuffle([...Array(w).fill('witch'), 'constable', ...Array(n * per - w - 1).fill('innocent')]);
+  let deck = []; Object.entries(DECK).forEach(([k,c]) => { for (let i = 0; i < c; i++) deck.push(`${k}_${i}`); });
+  deck = shuffle(shuffle(deck)); const cut = randInt(deck.length); deck = deck.slice(cut).concat(deck.slice(0, cut));
+  o.forEach((id, i) => {
+    const p = g.players[id];
+    Object.assign(p, { alive:true, skip:false, table:[], hand: deck.splice(0, 3), secrets: secrets.slice(i * per, (i + 1) * per).map((t, j) => ({ t, up:false, k: i + '.' + j })) });
+  });
+  const pPos = 6 + randInt(Math.max(1, Math.floor(deck.length * 0.6) - 6)); deck.splice(pPos, 0, 'pact_0');
+  deck.splice(nightSpot(deck.length), 0, 'night_0');
+  const now = Date.now(); const seen = {}; o.forEach(id => { seen[id] = (S.pdocs[id] && S.pdocs[id].seq) || 0; });
+  Object.assign(g, { phase:'play', order:o, deck, discard:[], raven:null, winner:null, turn:null, acted:'none', played:0, deadline:0, stepAt:now, seen,
+    pending:{ type:'arrange', ready:{}, deadline: now + T.arrange, at: now }, updatedAt:now,
+    log:[{ t:`${n} villagers gather in Salem, each dealt ${per} trial cards face down. ${w} of those cards ${w > 1 ? 'are witches' : 'is a witch'}.` }, { t:'Everyone arranges their trial cards face down in front of them.' }] });
+  markCoven(g);
+  fx(g, { t:'deal' });
+  S.game = g; render();
+  W(gPath(), 'set', g);
+}
+async function playAgain(){
+  const g = clone(S.game);
+  for (const [id,p] of Object.entries(g.players)) { if (!p.bot && !S.pdocs[id]) { delete g.players[id]; continue; } g.players[id] = { name:p.name, bot:p.bot, joined:p.joined }; }
+  ['order','deck','discard','winner','turn','pending','acted','deadline'].forEach(k => delete g[k]);
+  Object.assign(g, { phase:'lobby', log:[], updatedAt:Date.now() });
+  await W(gPath(), 'set', g);
+  try { const sn = await db.collection(`games/${S.code}/chat`).get(); for (const d of sn.docs) await db.doc(`games/${S.code}/chat/${d.id}`).delete().catch(() => {}); } catch(e) {}
+}
+
+function peerUid(p){ if (!p) return null; return (p.presence && p.presence.uid) || (p.state && p.state.uid) || (p.data && p.data.uid) || p.uid || null; }
+function hostMissing(g){
+  if (offline || !g || g.host === S.me.id || !g.players[S.me.id] || g.players[S.me.id].bot) return false;
+  const now = Date.now(); let byPeers = false;
+  if (S.peers && S.peers.length) {
+    if (S.peers.some(p => peerUid(p) === g.host)) S.hostMissingSince = null;
+    else { if (!S.hostMissingSince) S.hostMissingSince = now; byPeers = now - S.hostMissingSince > 10000; }
+  }
+  const dl = g.pending ? g.pending.deadline : g.deadline;
+  if (!roomH && g.hb && now - g.hb > 50000) return true; // host stopped sending heartbeats
+  return byPeers || (g.phase === 'play' && dl && now > dl + 20000);
+}
+function takeOver(){ W(gPath(), 'update', { host:S.me.id, updatedAt:Date.now() }); toast('You are now the host.'); }
+
+/* ---------- my intents ---------- */
+function waiting(){ const g = S.game; return g && S.seq > ((g.seen || {})[S.me.id] || 0) && Date.now() - S.sentAt < 6000; }
+function send(intent){
+  if (waiting()) return;
+  S.seq = Math.max(S.seq, (S.game.seen || {})[S.me.id] || 0) + 1;
+  S.mine.seq = S.seq; S.mine.intent = intent; S.sentAt = Date.now();
+  S.pdocs[S.me.id] = clone(S.mine);
+  W(pPath(), 'set', clone(S.mine));
+  S.sel = null; S.t1 = null; render();
+}
+
+/* ---------- interaction mode ---------- */
+function mode(){
+  const g = S.game; if (!g || g.phase !== 'play') return { k:'none' };
+  const P = g.players, me = P[S.me.id], pd = g.pending;
+  if (!me || !me.alive) return { k:'none' };
+  if (pd) {
+    if (pd.type === 'arrange') return { k:'arrange' };
+    if (pd.type === 'take') { const gv = giverOf(g, S.me.id); return gv && !pd.picks[S.me.id] && hidden(P[gv]).length ? { k:'take', from:gv } : { k:'none' }; }
+    if ((pd.type === 'raven' || (pd.type === 'night' && pd.stage === 'mark')) && isWitch(me)) return { k:'mark' };
+    if (pd.type === 'night' && pd.stage === 'save' && isConst(me)) return { k:'save' };
+    if (pd.type === 'night' && pd.stage === 'confess' && pd.conf[S.me.id] === undefined) return { k:'confess' };
+    if ((pd.type === 'trial' || pd.type === 'pact') && pd.chooser === S.me.id && pd.target && pd.target !== S.me.id) return { k:'secretpick', target:pd.target };
+    return { k:'none' };
+  }
+  if (g.turn === S.me.id) return { k:'turn' };
+  return { k:'none' };
+}
+function seatClickable(g, m, id){
+  const P = g.players, pd = g.pending;
+  if (!P[id] || !P[id].alive) return false;
+  if (m.k === 'mark') return pd.type === 'raven' || !isWitch(P[id]);
+  if (m.k === 'save') return id !== S.me.id;
+  if (m.k === 'turn' && S.sel) {
+    if (S.t1) return id !== S.t1 && validPlay(g, S.me.id, S.sel, S.t1, id);
+    return validFirst(g, S.me.id, S.sel, id);
+  }
+  return false;
+}
+function clickSeat(id){
+  const g = S.game, m = mode(); if (waiting() || !seatClickable(g, m, id)) return;
+  if (m.k === 'mark') return send({ a:'mark', t:id });
+  if (m.k === 'save') return send({ a:'save', t:id });
+  if (m.k === 'turn') {
+    const two = CARD[ct(S.sel)].two;
+    if (two && !S.t1) { S.t1 = id; return render(); }
+    return send({ a:'play', card:S.sel, t1: two ? S.t1 : id, t2: two ? id : undefined, n: S.qty || 1 });
+  }
+}
+function clickCard(c){
+  const g = S.game, m = mode(); if (m.k !== 'turn' || waiting() || g.acted === 'drew') return;
+  if (S.sel === c) { S.sel = null; S.t1 = null; return render(); }
+  if (!living(g).some(id => validFirst(g, S.me.id, c, id))) return toast(`${CARD[ct(c)].n} has no valid target right now.`);
+  S.sel = c; S.t1 = null; S.qty = 1; Sfx.play('flick'); render();
+}
+function clickSecret(owner, idx){
+  const g = S.game, m = mode(); if (waiting()) return;
+  if (m.k === 'secretpick' && owner === m.target && hidden(g.players[owner]).includes(idx)) return send({ a: g.pending.type === 'trial' ? 'reveal' : 'pact', idx });
+  if (m.k === 'confess' && owner === S.me.id && hidden(g.players[owner]).includes(idx)) {
+    if (g.players[owner].secrets[idx].t === 'witch' && !confirmWitch(idx)) return;
+    return send({ a:'confess', idx });
+  }
+}
+let witchConfirm = null;
+function confirmWitch(idx){ if (witchConfirm === idx) { witchConfirm = null; return true; } witchConfirm = idx; toast('Revealing your Witch trial card will kill you. Tap it again to confess anyway.'); return false; }
+
+/* ---------- chat ---------- */
+function me_(){ const g = S.game; const p = g && g.players[S.me.id]; return { g, p, inGame: !!(p && p.secrets), alive: !!(p && p.alive), witch: isWitch(p) }; }
+function canSend(ch){
+  const { g, inGame, alive, witch } = me_(); if (!g) return false;
+  const play = g.phase === 'play'; const night = play && g.pending && (g.pending.type === 'night' || g.pending.type === 'raven');
+  if (ch === 'town') return !play || (alive && !night);
+  if (ch === 'coven') return play && witch;
+  if (ch === 'spirits') return play && (!inGame || !alive);
+  return false;
+}
+function canSee(ch){
+  const { g, inGame, alive, witch } = me_(); if (!g) return false;
+  if (ch === 'town' || g.phase !== 'play') return true;
+  if (ch === 'coven') return witch || !alive || !inGame;
+  return !alive || !inGame;
+}
+async function sendChat(e){
+  e.preventDefault();
+  const text = $('#chatin').value.trim(); const ch = $('#chsel').value;
+  if (!text || !canSend(ch) || Date.now() - lastChatSend < 700) return;
+  lastChatSend = Date.now(); $('#chatin').value = '';
+  try { await db.collection(`games/${S.code}/chat`).add({ uid:S.me.id, name:(S.game.players[S.me.id] || {}).name || nick(), ch, text:text.slice(0,300), ts:Date.now() }); }
+  catch(err) { toast(err && err.code === 'invalid_argument' ? 'Message not sent. Refresh and try again.' : 'Message not sent.'); $('#chatin').value = text; }
+}
+
+/* ---------- render ---------- */
+function setH(sel, html){ const el = typeof sel === 'string' ? $(sel) : sel; if (el._h !== html) { el._h = html; el.innerHTML = html; } }
+const fmt = ms => { const s = Math.max(0, Math.ceil(ms/1000)); return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; };
+function renderTimer(){
+  const g = S.game, t = $('#timer'); if (!t || !g) return;
+  const dl = g.pending ? g.pending.deadline : g.deadline; t.textContent = dl ? fmt(dl - Date.now()) : '';
+}
+
+function render(){
+  const g = S.game; if (!g || $('#game').hidden) return;
+  const bh = document.querySelector('.bar').offsetHeight; if (S.barH !== bh) { S.barH = bh; document.documentElement.style.setProperty('--barh', bh + 'px'); }
+  const P = g.players, me = P[S.me.id], pd = g.pending, m = mode(), play = g.phase === 'play';
+  const inGame = !!(me && me.secrets), alive = !!(me && me.alive), witch = isWitch(me), dead = inGame && !alive;
+  const night = play && pd && (pd.type === 'night' || pd.type === 'raven');
+  document.body.classList.toggle('night', !!night);
+  if (S.sel && (!me || !me.hand || !me.hand.includes(S.sel) || m.k !== 'turn')) { S.sel = null; S.t1 = null; }
+
+  // phase bar
+  let ph = '';
+  if (g.phase === 'lobby') ph = 'Gathering';
+  else if (g.phase === 'over') ph = '<b>Game over</b>';
+  else if (pd && pd.type === 'arrange') ph = '<b>Arranging trial cards</b>';
+  else if (pd && pd.type === 'take') ph = '<b>The Pact</b> · taking trial cards';
+  else if (pd && pd.type === 'raven') ph = '<b>The first night</b>';
+  else if (pd && pd.type === 'night') ph = `<b>Night</b> · ${({ mark:'the coven hunts', save:'the Constable watches', confess:'dawn confessions' })[pd.stage]}`;
+  else if (pd && pd.type === 'trial') ph = `<b>Trial of ${esc(nm(g, pd.target))}</b>`;
+  else if (pd && pd.type === 'pact') ph = '<b>The Pact</b>';
+  else if (play) ph = `<b>${g.turn === S.me.id ? 'Your turn' : esc(nm(g, g.turn)) + '’s turn'}</b>`;
+  setH('#phase', ph + (play ? '<span id="timer"></span>' : '') + (offline ? '<span class="pill">practice</span>' : ''));
+  renderTimer();
+
+  // prompt
+  let H = '', calm = false;
+  if (g.phase === 'lobby') {
+    const n = Object.keys(P).length;
+    H = `<h2>The meeting house</h2>` + (g.host === S.me.id ? `You are the host. Share the code, add bots for empty seats, then start. <b>${n}/${MAXP}</b> seated, ${MINP} needed.` : `Waiting for <b>${esc(nm(g, g.host))}</b> to begin. ${n} seated.`)
+      + (offline ? '' : `<div><span class="codebox">Game code <b>${esc(g.code)}</b><button id="copyCode">Copy invite link</button></span></div>`);
+  } else if (g.phase === 'over') {
+    H = `<h2 class="win ${g.winner}">${g.winner === 'town' ? 'The town prevails' : 'The coven prevails'}</h2>All trial cards are now shown.${g.host === S.me.id ? ' Start another game when ready.' : ''}`;
+  } else if (!inGame) { H = '<h2>Spectating</h2>You joined mid-game. You can see every trial card and talk in the Spirits channel.'; calm = true; }
+  else if (m.k === 'arrange') {
+    const mine = me.secrets; const ks = mine.map(x => x.k);
+    if (!S.arr || S.arr.length !== ks.length || S.arr.some(k => !ks.includes(k))) { S.arr = ks.slice(); S.arrSel = null; }
+    const byK = {}; mine.forEach(x => { byK[x.k] = x; });
+    const humans = living(g).filter(id => !P[id].bot), rd = humans.filter(id => pd.ready[id]).length, iAmReady = !!pd.ready[S.me.id];
+    const changed = iAmReady && S.arr.join() !== ks.join();
+    H = `<h2>Arrange your trial cards</h2>They lie face down in this order in front of you. When someone accuses you, the accuser picks a card <b>by its position</b>, so place them wisely. <span class="note">Drag a card, or tap two cards to swap them.</span>
+      <div class="arrange">${S.arr.map((k, i) => { const x = byK[k]; return `<div class="acard ${x.t}${S.arrSel === i ? ' sel' : ''}" draggable="true" data-arr="${i}" role="button" tabindex="0" title="Position ${i + 1}: ${SECRET[x.t].n}"><span class="pos-n">${i + 1}</span><b>${SECRET[x.t].i}</b><small>${SECRET[x.t].n}</small></div>`; }).join('')}</div>
+      <div class="act"><button id="arrReady" class="${!iAmReady || changed ? 'primary' : ''}" ${waiting() ? 'disabled' : ''}>${!iAmReady ? 'Ready' : changed ? 'Save new order' : 'Ready ✓'}</button><button id="arrShuffle" class="ghost">Shuffle</button><span class="note">${rd}/${humans.length} players ready</span></div>`;
+  } else if (pd && pd.type === 'arrange') { calm = true; H = '<h2>Arranging</h2>Everyone is arranging their trial cards…'; }
+  else if (m.k === 'take') {
+    H = `<h2>The Pact: take a card</h2>Tap one of <b>${esc(nm(g, m.from))}</b>’s face-down trial cards on the table (the player on your left). You will take that card into your own hand of trial cards. Everyone chooses at the same time.`;
+  } else if (pd && pd.type === 'take') {
+    calm = true; const mine = pd.picks[S.me.id]; const gv = giverOf(g, S.me.id);
+    const pos = mine && gv ? P[gv].secrets.findIndex(x => x.k === mine) + 1 : 0;
+    H = `<h2>The Pact</h2>${mine ? `You chose card #${pos} from ${esc(nm(g, gv))}. ` : ''}Waiting for everyone to take a trial card from the player on their left…`;
+  }
+  else if (m.k === 'mark') {
+    const W = living(g).filter(id => isWitch(P[id])), solo = W.length === 1;
+    const t = tallyVotes(pd.votes), mine = pd.votes[S.me.id];
+    const rows = Object.entries(t).sort((a, b) => b[1] - a[1]).map(([tid, c]) => {
+      const by = W.filter(w => pd.votes[w] === tid).map(w => esc(nm(g, w).split(' ')[0])).join(', ');
+      return `<span class="vote${tid === mine ? ' mine' : ''}"><b>${esc(nm(g, tid))}</b> ${c} vote${c === 1 ? '' : 's'}<small>${by}</small></span>`; }).join('');
+    const what = pd.type === 'raven' ? 'who receives the Raven' : 'who to attack';
+    H = (pd.type === 'raven' ? '<h2>Place the Raven</h2>' : '<h2>The coven hunts</h2>')
+      + (solo ? `You are the only witch: tap a player on the table to choose ${what}.` : `Vote on ${what}: tap a player on the table. You can change your vote until everyone has voted or time runs out. <b>A tie is decided at random</b> between the tied choices.`)
+      + `<div class="act votes">${rows || '<span class="note">No votes yet.</span>'}${solo ? '' : `<span class="note">${W.filter(w => pd.votes[w]).length}/${W.length} witches voted</span>`}</div>`;
+  } else if (m.k === 'save') { H = `<h2>Stand guard</h2>You hold the Constable. Choose someone to protect tonight (not yourself).`; }
+  else if (m.k === 'confess') {
+    const mk = pd.mark;
+    H = `<h2>Dawn: confess?</h2>${mk === S.me.id ? '<b style="color:var(--blood)">The coven marked you tonight.</b> ' : ''}Tap one of your trial cards to confess it (turn it face up). Anyone who confesses is safe from tonight’s mark.
+      <div class="confess">${me.secrets.map((sc, i) => `<div class="acard ${sc.t}${sc.up ? ' up' : ''}" ${sc.up ? '' : `data-sec="${esc(S.me.id)}:${i}" role="button" tabindex="0"`} title="${sc.up ? 'Already revealed' : 'Confess: reveal this card'}"><span class="pos-n">${i + 1}</span><b>${SECRET[sc.t].i}</b><small>${SECRET[sc.t].n}</small></div>`).join('')}
+      <button id="noConfess" style="align-self:center">Don’t confess</button></div>`;
+  } else if (m.k === 'secretpick') {
+    H = pd.type === 'trial' ? `<h2>The trial of ${esc(nm(g, pd.target))}</h2>Your accusation brought them to trial. Tap one of their face-down trial cards on the table to reveal it.` : `<h2>The Pact</h2>Tap one of ${esc(nm(g, pd.target))}’s face-down trial cards on the table to reveal it.`;
+  } else if (night) {
+    calm = true;
+    const sub = pd.type === 'night' && pd.stage === 'confess' ? 'Waiting for others to decide whether to confess…' : 'The village sleeps. Strange things stir in the dark…';
+    H = `<h2>${pd.type === 'raven' ? 'The first night' : 'Night'}</h2>${dead ? 'As a spirit, you see the coven’s choices on the board.' : sub}`;
+  } else if (pd && (pd.type === 'trial' || pd.type === 'pact')) { calm = true; H = `<h2>${pd.type === 'trial' ? 'Trial of ' + esc(nm(g, pd.target)) : 'The Pact'}</h2>Waiting for ${esc(nm(g, pd.chooser))} to choose a trial card…`; }
+  else if (dead) { calm = true; H = '<h2>You are dead</h2>You can see every trial card and haunt the Spirits channel, but the living cannot hear you.'; }
+  else if (m.k === 'turn') {
+    if (S.sel) {
+      const type = ct(S.sel), C = CARD[type], have = me.hand.filter(x => ct(x) === type).length;
+      const multi = MULTI.has(type) && have > 1; S.qty = Math.min(Math.max(1, S.qty || 1), multi ? have : 1);
+      const total = C.pts ? ` <span class="note">(${C.pts * S.qty} accusation point${C.pts * S.qty === 1 ? '' : 's'})</span>` : type === 'defense' ? ` <span class="note">(removes up to ${3 * S.qty} points)</span>` : '';
+      H = `<h2>${C.n}${multi ? ` ×${S.qty}` : ''}</h2>${C.two ? (S.t1 ? `Now tap the second player (first: <b>${esc(nm(g,S.t1))}</b>).` : 'Tap the first player.') : 'Tap a highlighted player.'} <span class="note">Tap the card again to cancel.</span>`
+        + (multi ? `<div class="act qty"><span>How many?</span><button id="qtyMinus" aria-label="One fewer" ${S.qty <= 1 ? 'disabled' : ''}>−</button><b>${S.qty}</b><button id="qtyPlus" aria-label="One more" ${S.qty >= have ? 'disabled' : ''}>+</button><button id="qtyAll" class="ghost" ${S.qty >= have ? 'disabled' : ''}>All ${have}</button>${total}</div>` : '');
+    }
+    else H = g.acted === 'played' ? `<h2>Your turn</h2>Play more cards, or end your turn.` : `<h2>Your turn</h2>Draw 2 cards, or play cards from your hand.`;
+  } else { calm = true; H = `<h2>${esc(nm(g, g.turn))}’s turn</h2>Argue in the town chat while you wait.`; }
+  if (waiting()) H += '<div class="note" style="margin-top:6px">Sending…</div>';
+  setH('#prompt', H); $('#prompt').classList.toggle('calm', calm);
+
+  // round table
+  const seeAll = g.phase === 'over' || dead || (play && !inGame);
+  const showVotes = pd && (pd.type === 'raven' || (pd.type === 'night' && pd.stage === 'mark')) && (witch || dead || (play && !inGame));
+  const ids0 = g.phase === 'lobby' ? Object.keys(P).sort((a,b) => P[a].joined - P[b].joined) : order(g);
+  const mi = ids0.indexOf(S.me.id); const ids = mi > 0 ? ids0.slice(mi).concat(ids0.slice(0, mi)) : ids0; // you sit at the bottom
+  const area = $('#tablearea'), aw = Math.max(200, area.clientWidth - 20), ah = Math.max(200, area.clientHeight - 20);
+  const n = ids.length, narrow = aw < 640;
+  const compact = narrow || n >= 9;
+  const R = narrow ? (n >= 9 ? { sx:37, sy:44, cx:20, cy:30 } : { sx:37, sy:45, cx:25, cy:31 }) : { sx:44, sy:44, cx:29, cy:29 };
+  // Pick the table's shape, then the largest size that fits the free space without scrolling.
+  const ratio = narrow ? (n <= 6 ? 3 / 4 : n <= 9 ? 3 / 4.4 : 3 / 4.8) : (n <= 6 ? 16 / 11 : n <= 9 ? 16 / 11.8 : 16 / 12.6);
+  const seatRoom = narrow ? 64 : (compact ? 78 : 96); // seats at the top and bottom stick out past the table's edge
+  const tw = Math.min(aw, (ah - seatRoom) * ratio), th = tw / ratio;
+  const sz = $('#seats'); sz.style.width = tw + 'px'; sz.style.height = th + 'px';
+  sz.classList.toggle('compact', compact || tw < 900); sz.classList.toggle('tiny', narrow);
+  const parts = ids.map((id, k) => {
+    const q = P[id]; const can = seatClickable(g, m, id);
+    const ang = Math.PI / 2 + k * 2 * Math.PI / Math.max(n, 1);
+    const sq = narrow && n >= 7 ? 3 : 2, f = v => Math.sign(v) * Math.pow(Math.abs(v), 2 / sq); // squarer ring on phones
+    const rotDeg = Math.round((ang - Math.PI / 2) * 180 / Math.PI) % 360; // cards lie square to their owner, like at a real table
+    const at = (rx, ry) => `left:${(50 + rx * f(Math.cos(ang))).toFixed(2)}%;top:${(50 + ry * f(Math.sin(ang))).toFixed(2)}%`;
+    const tags = [];
+    if (id === S.me.id) tags.push('<span class="t">you</span>');
+    if (id === g.host) tags.push('<span class="t host">host</span>');
+    if (q.bot) tags.push('<span class="t">bot</span>');
+    if (q.secrets && !q.alive) tags.push(q.wasWitch ? `<span class="t dead">✝</span><span class="t coven" title="${q.secrets.some(x => x.t === 'witch') ? 'Died a witch' : 'Died a witch, but no longer held a Witch card: it was passed on in the Pact'}">🧹 witch${q.secrets.some(x => x.t === 'witch') ? '' : ' (card passed on)'}</span>` : '<span class="t dead">✝ not a witch</span>');
+    if (q.alive && isWitch(q) && (seeAll || (witch && play))) tags.push(`<span class="t coven" title="${holdsWitch(q) ? 'Holds a Witch trial card' : 'Of the coven (no longer holds a Witch card)'}">🧹${id === S.me.id ? ' witch' : ''}${holdsWitch(q) ? '' : '*'}</span>`);
+    if (pd && pd.type === 'take' && q.alive && giverOf(g, id) && hidden(P[giverOf(g, id)]).length) tags.push(pd.picks[id] ? '<span class="t" style="color:var(--witch)">took ✓</span>' : '<span class="t">choosing…</span>');
+    if (pd && pd.type === 'arrange' && q.alive) tags.push(pd.ready[id] ? '<span class="t" style="color:var(--witch)">ready ✓</span>' : '<span class="t">arranging…</span>');
+    const pts = q.secrets ? accPts(q) : 0;
+    const lim = trialAt(q);
+    const meter = q.secrets && q.alive ? `<div class="meter${lim > TRIAL ? ' devoted' : ''}" title="Accusations: ${pts} of ${lim}${lim > TRIAL ? ' (Devotion)' : ''}"><span class="hc">✋${q.hand.length}</span><span class="mb"><i style="width:${Math.min(100, pts / lim * 100)}%"></i></span><b>${pts}</b>/${lim}</div>` : '';
+    let marks = '';
+    if (showVotes) { const by = Object.entries(pd.votes).filter(([,t]) => t === id).map(([v]) => nm(g,v)); if (by.length) marks = `<div class="marks">${pd.type === 'raven' ? 'Raven' : 'marked'} by ${by.map(esc).join(', ')}</div>`; }
+    if (pd && pd.type === 'night' && pd.mark === id && (witch || dead || (pd.stage === 'confess' && id === S.me.id))) marks += `<div class="marks" style="color:var(--blood)">☠ marked tonight</div>`;
+    if (pd && pd.type === 'night' && pd.stage !== 'mark' && pd.save === id && (isConst(me) || dead)) marks += `<div class="marks" style="color:var(--gold)">🏮 guarded</div>`;
+    const rm = g.phase === 'lobby' && q.bot && g.host === S.me.id ? `<button class="rm" data-rm="${esc(id)}" title="Remove bot" aria-label="Remove ${esc(q.name)}">✕</button>` : '';
+    const isTurn = play && !pd && g.turn === id;
+    const sm_ = mk('seat:' + id);
+    const seat = `<div data-seat="${esc(id)}" class="pos seat${sm_.c}${can ? ' can' : ''}${S.t1 === id ? ' t1' : ''}${q.secrets && !q.alive ? ' dead' : ''}${id === S.me.id ? ' me' : ''}${isTurn ? ' turn' : ''}" style="${at(R.sx, R.sy)};${sm_.s}" ${can ? `data-pick="${esc(id)}" role="button" tabindex="0"` : ''}>
+      ${rm}<div class="sh"><div class="av" style="background:${colorOf(g,id)}">${esc((q.name || '?')[0].toUpperCase())}</div><div style="min-width:0"><div class="nm">${esc(q.name)}</div><div class="sub">${q.hand ? '✋ ' + q.hand.length + ' cards' : g.phase === 'lobby' ? 'seated' : ''}</div></div></div>
+      ${meter}<div class="tags">${tags.join('')}</div>${marks}</div>`;
+    let trials = '';
+    const REDS = ['rumor', 'testimony', 'eyewitness'];
+    const redStacks = REDS.map(rt => {
+      const ids = (q.table || []).filter(x => ct(x.id) === rt).map(x => x.id); if (!ids.length) return '';
+      const shown = ids.filter(x => mk('fc:' + x).c !== ' fx-hold'), landing = ids.map(x => mk('fc:' + x)).find(m => m.c === ' fx-land');
+      const C = CARD[rt];
+      return `<div class="fcard red${shown.length ? '' : ' fx-hold'}${landing ? ' fx-land' : ''}" style="${landing ? landing.s : ''}" data-fct="${rt}" data-fc="${esc(ids[0])}" title="${shown.length} × ${C.n}: ${C.pts * shown.length} accusation point${C.pts * shown.length === 1 ? '' : 's'}">${shown.length > 1 ? `<i class="fcnt">×${shown.length}</i>` : ''}<b>${C.i}</b><span>${C.n}</span><u>${C.pts}</u></div>`;
+    }).join('');
+    const front = redStacks + (q.table || []).filter(x => CARD[ct(x.id)].c !== 'red').map(x => {
+      const C = CARD[ct(x.id)], fm = mk('fc:' + x.id), isB = ct(x.id) === 'bound', bp = isB ? boundPartner(g, id) : null;
+      const pairTxt = isB ? (bp ? `⇄ ${esc(nm(g, bp).split(' ')[0])}` : 'unlinked') : '';
+      return `<div class="fcard ${C.c}${fm.c}${isB && bp ? ' linked' : ''}" style="${fm.s}" data-fc="${esc(x.id)}" title="${C.n}${isB ? (bp ? ' (linked with ' + esc(nm(g, bp)) + ')' : ' (waiting for the second Bound Souls card)') : ''}: ${C.txt}"><b>${C.i}</b><span>${C.n}</span>${pairTxt ? `<em>${pairTxt}</em>` : ''}</div>`; }).join('');
+    if (q.secrets) trials = `<div data-tr="${esc(id)}" class="pos trials${q.alive ? '' : ' gone'}" data-rot="${rotDeg}" style="${at(R.cx, R.cy)};transform:translate(-50%,-50%) rotate(${rotDeg}deg)"><div class="trow">${(id === S.me.id && pd && pd.type === 'arrange' && S.arr ? S.arr.map(k => q.secrets.find(x => x.k === k)).filter(Boolean) : q.secrets).map((sc,i) => {
+      const take = m.k === 'take' && m.from === id && !sc.up;
+      const pick = (m.k === 'secretpick' && m.target === id && !sc.up) || take;
+      const peek = !sc.up && (id === S.me.id || seeAll);
+      const title = sc.up ? SECRET[sc.t].n : peek ? SECRET[sc.t].n + ' (face down)' : 'Face-down trial card';
+      const km = mk('k:' + sc.k);
+      return `<div data-k="${esc(sc.k)}" style="${km.s}" class="tc${km.c} ${sc.up ? 'up ' + sc.t : 'back'} ${pick ? 'can' : ''}" ${take ? `data-take="${esc(sc.k)}" role="button" tabindex="0"` : pick ? `data-sec="${esc(id)}:${i}" role="button" tabindex="0"` : ''} title="${take ? 'Take this card (position ' + (i + 1) + ')' : title}">${sc.up ? `<span>${SECRET[sc.t].i}</span>` : peek ? `<i>${SECRET[sc.t].i}</i>` : ''}</div>`; }).join('')}</div>${front ? `<div class="front">${front}</div>` : ''}</div>`;
+    return trials + seat;
+  });
+  let center = '';
+  if (g.phase === 'lobby') center = `<div class="ctext"><b>The meeting house</b>${offline ? 'Practice game' : `Code <span class="code">${esc(g.code)}</span>`}<br>${n}/${MAXP} seated</div>`;
+  else if (g.deck) {
+    const top = g.discard[g.discard.length - 1];
+    const label = pd && pd.type === 'arrange' ? 'Arranging…' : pd && pd.type === 'raven' ? 'The first night' : pd && pd.type === 'night' ? 'Night' : pd && pd.type === 'trial' ? 'Trial!' : pd && (pd.type === 'pact' || pd.type === 'take') ? 'The Pact' : g.phase === 'over' ? (g.winner === 'town' ? 'Town wins' : 'Coven wins') : (g.turn === S.me.id ? 'Your turn' : esc(nm(g, g.turn)).split(' ')[0] + '’s turn');
+    center = `<div class="pile" title="Draw pile: ${g.deck.length} cards"><div class="cb"></div><div class="cb"></div><div class="cb" id="deckTop"><span>${g.deck.length}</span></div><small>Deck</small></div>
+      <div class="ctext"><b>${label}</b></div>
+      <div class="pile" id="discPile" title="Discard pile">${top ? `<div class="dtop ${CARD[ct(top)].c}">${CARD[ct(top)].i}<span>${CARD[ct(top)].n}</span></div>` : '<div class="dtop none"></div>'}<small>Discard ${g.discard.length}</small></div>`;
+  }
+  setH('#seats', `<div class="felt"></div><div class="center">${center}</div>` + parts.join('') + `<i data-n="${narrow}"></i>`);
+  $('#seats').classList.toggle('dim', !!night);
+
+  // hand
+  let HW = '';
+  if (play && inGame && alive) {
+    const myTurn = m.k === 'turn';
+    HW = `<div class="hand">${me.hand.length ? handGroups(me.hand).map(gr => {
+        // Identical cards share one face with a count badge; a card still flying in is not counted yet.
+        const ms = gr.ids.map(c => ({ c, m: mk('card:' + c) }));
+        const shown = ms.filter(x => x.m.c !== ' fx-hold'); if (!shown.length) return cardHTML(gr.ids[0], 'fx-hold');
+        const rep = gr.ids.includes(S.sel) ? S.sel : shown[0].c; const pop = ms.find(x => x.m.c === ' fx-pop');
+        const badge = shown.length > 1 ? `<span class="cnt" aria-label="${shown.length} copies">×${shown.length}</span>` : '';
+        return cardHTML(rep, `${shown.length > 1 ? 'stacked ' : ''}${myTurn && g.acted !== 'drew' ? 'can' : 'off'} ${gr.ids.includes(S.sel) ? 'sel' : ''}${pop ? pop.m.c : ''}`, `data-card="${esc(rep)}" style="${pop ? pop.m.s : ''}" title="${CARD[gr.t].n}${shown.length > 1 ? ' ×' + shown.length : ''}"`, badge);
+      }).join('') : '<span class="empty">No cards in hand.</span>'}</div>
+      ${myTurn ? `<div class="btns"><button id="drawBtn" class="${g.acted === 'none' ? 'primary' : ''}" ${g.acted !== 'none' || waiting() ? 'disabled' : ''}>Draw 2</button><button id="endBtn" class="${g.acted === 'played' ? 'primary' : ''}" ${g.acted !== 'played' || waiting() ? 'disabled' : ''}>End turn</button></div>` : ''}`;
+  }
+  if (pd && pd.type === 'arrange') HW = ''; // the arranging cards take the dock
+  setH('#handwrap', HW); $('#handwrap').hidden = !HW;
+
+  // host bar
+  const isHost = g.host === S.me.id, B = [];
+  if (isHost && g.phase === 'lobby') {
+    B.push('<button id="botBtn">+ Add bot</button>');
+    B.push(`<label style="margin:0">Turn timer <select id="turnLen">${[30,60,90,120].map(v => `<option value="${v}"${g.settings.turn === v ? ' selected' : ''}>${v}s</option>`).join('')}</select></label>`);
+    B.push('<span class="sp"></span>', `<button id="startBtn" class="primary" ${Object.keys(P).length < MINP ? 'disabled' : ''}>Start game</button>`);
+  } else if (isHost && g.phase === 'over') B.push('<button id="againBtn" class="primary">Play again</button>');
+  if (hostMissing(g)) B.push('<span class="note">The host seems to have left.</span><button id="takeBtn" class="primary">Take over as host</button>');
+  setH('#hostbar', B.join(''));
+
+  // my secrets
+  let MS = '';
+  if (inGame) {
+    const confessing = m.k === 'confess';
+    MS = `<h3>Your trial cards</h3><div class="big">${me.secrets.map((sc,i) => `<div data-k="${esc(sc.k)}" style="${mk('k:' + sc.k).s}" class="tc${mk('k:' + sc.k).c} ${sc.up ? 'up ' + sc.t : 'own ' + sc.t} ${confessing && !sc.up ? 'can' : ''}" ${confessing && !sc.up ? `data-sec="${esc(S.me.id)}:${i}" role="button" tabindex="0"` : ''}>${SECRET[sc.t].i}<small>${SECRET[sc.t].n}</small><em>${sc.up ? 'revealed' : 'face down'}</em></div>`).join('')}</div>`;
+    if (!alive) MS += '<p style="color:var(--blood)">You have died.</p>';
+    else if (witch) { const c = living(g).filter(id => id !== S.me.id && isWitch(P[id])); MS += `<p><b style="color:var(--witch)">🧹 You are of the coven.</b> ${holdsWitch(me) ? '' : '<span style="color:var(--witch)">Your Witch card was taken, but once a witch, always a witch.</span> '}${c.length ? 'Fellow witches: ' + c.map(id => esc(nm(g,id)) + (holdsWitch(P[id]) ? '' : '*')).join(', ') + '.' : 'You are the only witch.'} The coven wins when everyone alive is a witch.</p>`; }
+    else MS += `<p><b style="color:var(--gold)">You stand with the town.</b> Expose every Witch trial card to win.${isConst(me) ? ' You hold the Constable: each night you guard one person.' : ''}</p>`;
+    if (confessing) MS += '<p style="color:var(--ember)">Tap a face-down card to confess it.</p>';
+  } else if (g.phase === 'lobby') {
+    const n = Object.keys(P).length, per = n <= 5 ? 5 : n <= 7 ? 4 : 3, w = n <= 5 ? 1 : 2;
+    MS = `<h3>Your trial cards</h3><p class="note" style="margin:0">Dealt face down when the game starts. With ${n} players, each gets ${per} trial cards: ${w} Witch, 1 Constable, the rest Innocent.</p>`;
+  } else MS = `<h3>Spectating</h3><p class="note" style="margin:0">You’ll be dealt in next game.</p>`;
+  setH('#mysec', MS);
+
+  // a chime when your turn starts
+  const myTurnNow = play && !pd && g.turn === S.me.id && alive;
+  if (myTurnNow && !S.wasMyTurn) Sfx.play('turn', Math.max(0, fxBusyUntil - Date.now()));
+  S.wasMyTurn = myTurnNow;
+  // personal notice when the Pact changes what you are
+  if (play && inGame && alive) {
+    const st = (witch ? 'W' : 'T') + (holdsWitch(me) ? 'h' : '');
+    if (S.myState && S.myState !== st && S.myStateGame === g.code + g.order.join()) {
+      const wait = Math.max(0, fxBusyUntil - Date.now()) + 400;
+      const msg = !S.myState.startsWith('W') && witch ? ['🧹 You joined the coven', 'You took a Witch trial card. You are a witch now, for the rest of the game.']
+        : S.myState === 'Wh' && st === 'W' ? ['🧹 You are still a witch', 'Your Witch card was taken, but once a witch, always a witch.'] : null;
+      if (msg) Sfx.play('coven', wait);
+      if (msg && !reduceMotion) { setTimeout(() => { veil('pact'); banner(`${msg[0]}<small>${msg[1]}</small>`, 'pact'); }, wait); fxBusyUntil = Date.now() + wait + ANNOUNCE; }
+    }
+    S.myState = st; S.myStateGame = g.code + g.order.join();
+  }
+  // log
+  const L = g.log || [];
+  setH('#log', L.length ? L.map(e => `<div class="${e.k || ''}">${esc(e.t)}</div>`).join('') : '<span class="empty">Nothing has happened yet.</span>');
+  $('#log').scrollTop = 1e6;
+
+  // chat channel
+  const chs = ['town','coven','spirits'].filter(canSend), cur = $('#chsel').value, lbl = { town:'Town', coven:'Coven', spirits:'Spirits' };
+  const opts = chs.map(c => `<option value="${c}">${lbl[c]}</option>`).join('');
+  if ($('#chsel').innerHTML !== opts) { $('#chsel').innerHTML = opts; if (chs.includes(cur)) $('#chsel').value = cur; else if (chs.includes('coven') && night) $('#chsel').value = 'coven'; }
+  $('#chsel').hidden = chs.length <= 1; $('#chatin').disabled = !chs.length;
+  const v = $('#chsel').value;
+  $('#chatin').placeholder = !chs.length ? (night ? 'The town sleeps. Silence until dawn…' : 'You cannot speak now.') : v === 'coven' ? 'Whisper to the coven…' : v === 'spirits' ? 'Speak among the dead…' : 'Speak to the village…';
+  renderChat();
+  runFx();
+  const a = $('#tablearea'), key = a.clientWidth + 'x' + a.clientHeight;
+  if (S.areaKey !== key) { S.areaKey = key; requestAnimationFrame(render); }
+}
+
+let seenChat = 0;
+function updateUnread(){
+  const open = $('#side').classList.contains('open') || window.innerWidth > 900;
+  const vis = S.chat.filter(m => m && canSee(m.ch)).length;
+  if (open) seenChat = vis;
+  const u = Math.max(0, vis - seenChat); $('#unread').hidden = !u; $('#unread').textContent = u > 9 ? '9+' : u;
+}
+function renderChat(){
+  const el = $('#chatlog'); if (!S.game) return;
+  const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 40;
+  const msgs = S.chat.filter(m => m && canSee(m.ch));
+  setH(el, msgs.length ? msgs.map(m => `<div class="msg ${esc(m.ch)}">${m.ch !== 'town' ? `<span class="ch">${esc(m.ch)}</span>` : ''}<b style="${m.ch === 'town' && S.game.players[m.uid] ? 'color:' + colorOf(S.game, m.uid) : ''}">${esc(m.name)}</b> ${esc(m.text)}</div>`).join('') : '<div class="msg sys">No one has spoken yet.</div>');
+  if (atBottom) el.scrollTop = el.scrollHeight;
+  updateUnread();
+}
+
+/* ---------- sound effects (synthesized with Web Audio: nothing to download) ---------- */
+const Sfx = (() => {
+  let ctx = null, out = null, nbuf = null, muted = store.get('salem.mute') === '1';
+  const ac = () => {
+    if (!ctx) { try { const A = window.AudioContext || window.webkitAudioContext; if (!A) return null; ctx = new A(); out = ctx.createGain(); out.gain.value = .55; out.connect(ctx.destination); } catch(e) { return null; } }
+    if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+    return ctx;
+  };
+  // Browsers only allow sound after the player has clicked or tapped once.
+  ['pointerdown', 'keydown'].forEach(ev => document.addEventListener(ev, () => { if (!muted) ac(); }, { passive: true }));
+  const noiseBuf = () => { if (!nbuf) { nbuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate); const d = nbuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; } return nbuf; };
+  function env(g, t, peak, att, dur){ g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + att); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); }
+  function noise(t, dur, o = {}){
+    const src = ctx.createBufferSource(); src.buffer = noiseBuf();
+    const f = ctx.createBiquadFilter(); f.type = o.type || 'bandpass'; f.frequency.setValueAtTime(o.freq || 2000, t); if (o.to) f.frequency.exponentialRampToValueAtTime(o.to, t + dur); f.Q.value = o.q ?? 1;
+    const g = ctx.createGain(); env(g, t, o.gain ?? .3, o.att ?? .003, dur);
+    src.connect(f); f.connect(g); g.connect(out); src.start(t, Math.random() * .5); src.stop(t + dur + .05);
+  }
+  function tone(t, freq, dur, o = {}){
+    const osc = ctx.createOscillator(); osc.type = o.type || 'sine'; osc.frequency.setValueAtTime(freq, t); if (o.to) osc.frequency.exponentialRampToValueAtTime(o.to, t + dur);
+    if (o.detune) osc.detune.value = o.detune;
+    const g = ctx.createGain(); env(g, t, o.gain ?? .15, o.att ?? .01, dur);
+    let node = osc; if (o.lp) { const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = o.lp; osc.connect(f); node = f; }
+    node.connect(g); g.connect(out); osc.start(t); osc.stop(t + dur + .05);
+  }
+  const bell = (t, f, dur, gain = .12) => [1, 2.01, 2.76, 4.07].forEach((m, i) => tone(t, f * m, dur / (1 + i * .6), { gain: gain / (1 + i), att: .004 }));
+  const S = {
+    flick: t => noise(t, .07, { freq: 3200 + Math.random() * 1500, q: .7, gain: .22 }),
+    place: t => { noise(t, .1, { type: 'lowpass', freq: 1200, gain: .35 }); tone(t, 140, .09, { to: 70, gain: .18 }); },
+    thud:  t => { noise(t, .12, { type: 'lowpass', freq: 700, gain: .5 }); tone(t, 110, .14, { to: 55, gain: .3 }); },
+    flip:  t => { noise(t, .045, { freq: 5000, q: .6, gain: .2 }); noise(t + .05, .06, { freq: 2600, q: .6, gain: .18 }); },
+    shuffle: t => { for (let i = 0; i < 16; i++) S.flick(t + i * .032 + Math.random() * .01); noise(t + .58, .12, { type: 'lowpass', freq: 900, gain: .35 }); },
+    gavel: t => { for (let i = 0; i < 3; i++) { const u = t + i * .32; tone(u, 95, .2, { type: 'triangle', to: 50, gain: .5 }); noise(u, .07, { freq: 1800, q: 1.5, gain: .45 }); } },
+    death: t => { bell(t, 130.8, 3.2, .2); bell(t + .02, 98, 3.6, .12); },
+    night: t => { [55, 82.4, 87.3].forEach((f, i) => tone(t, f, 3.4, { type: 'sawtooth', lp: 380, gain: .07, att: .9, detune: i * 7 })); noise(t, 3.2, { freq: 400, to: 900, q: .6, gain: .07, att: 1.2 }); },
+    dawn:  t => [523.3, 659.3, 784, 1046.5].forEach((f, i) => bell(t + i * .18, f, 1.8, .07)),
+    pact:  t => { [61.7, 65.4, 92.5].forEach(f => tone(t, f, 3, { type: 'sawtooth', lp: 300, gain: .07, att: .6 })); [0, .28, 1.1, 1.38].forEach(d => tone(t + d, 62, .18, { to: 45, gain: .35 })); },
+    coven: t => [220, 233.1, 329.6].forEach((f, i) => tone(t + i * .12, f, 2.2, { type: 'triangle', gain: .06, att: .5 })),
+    raven: t => [0, .3].forEach(d => { tone(t + d, 780, .22, { type: 'sawtooth', to: 430, lp: 2400, gain: .1 }); noise(t + d, .2, { freq: 1300, q: 2, gain: .12 }); }),
+    turn:  t => { tone(t, 659.3, .35, { type: 'triangle', gain: .1 }); tone(t + .14, 987.8, .5, { type: 'triangle', gain: .1 }); },
+    burn:  t => noise(t, .9, { freq: 600, to: 3000, q: .5, gain: .25, att: .1 }),
+    glow:  t => { tone(t, 880, .6, { gain: .06 }); tone(t + .08, 1318.5, .7, { gain: .05 }); },
+    winTown:  t => [392, 523.3, 659.3, 784].forEach((f, i) => { tone(t + i * .16, f, .9, { type: 'triangle', gain: .1 }); tone(t + i * .16, f / 2, .9, { gain: .06 }); }),
+    winCoven: t => [440, 415.3, 349.2, 293.7].forEach((f, i) => tone(t + i * .3, f, 1.3, { type: 'sawtooth', lp: 900, gain: .08, att: .05 })),
+  };
+  return {
+    play(name, delay = 0, ...args){ if (muted || reduceMotionAudio || !S[name]) return; const c = ac(); if (!c) return; try { S[name](c.currentTime + .02 + delay / 1000, ...args); } catch(e) {} },
+    get muted(){ return muted; },
+    toggle(){ muted = !muted; store.set('salem.mute', muted ? '1' : '0'); if (!muted) { ac(); this.play('flick'); } return muted; },
+  };
+})();
+const reduceMotionAudio = false; // sounds still play when animations are reduced
+function syncSndBtn(){ const b = $('#sndBtn'); if (b) { b.textContent = Sfx.muted ? '🔇' : '🔊'; b.title = Sfx.muted ? 'Sound off (tap to turn on)' : 'Sound on (tap to mute)'; b.setAttribute('aria-label', b.title); } }
+
+/* ---------- animations ---------- */
+const reduceMotion = (() => { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch(e) { return false; } })();
+const fxLayer = document.createElement('div'); fxLayer.id = 'fx'; document.body.appendChild(fxLayer);
+let fxSeen = null, inFx = false, fxBusyUntil = 0;
+const marks = {};
+// A mark puts an animation class on a seat, trial card or hand card; render() re-applies it with a negative delay so redraws don't restart it.
+function mark(key, cls, dur){ marks[key] = { cls, t0: Date.now(), dur }; setTimeout(render, dur + 40); }
+function mk(key){
+  const m = marks[key]; if (!m) return { c:'', s:'' };
+  const el = Date.now() - m.t0; if (el >= m.dur) { delete marks[key]; return { c:'', s:'' }; }
+  return { c: ' fx-' + m.cls, s: (m.cls === 'hold' || m.cls === 'cover') ? '' : `animation-delay:-${el}ms;` };
+}
+const ctr = el => { if (!el) return null; const r = el.getBoundingClientRect(); if (!r.width && !r.height) return null; return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; };
+const cssq = v => (window.CSS && CSS.escape) ? CSS.escape(v) : String(v).replace(/"/g, '\\"');
+const seatEl = id => document.querySelector(`[data-seat="${cssq(id)}"]`);
+const trialPt = (id, k) => ctr(document.querySelector(`[data-tr="${cssq(id)}"] [data-k="${cssq(k)}"]`)) || ctr(document.querySelector(`[data-tr="${cssq(id)}"]`));
+const deckPt = () => ctr($('#deckTop')) || ctr($('#seats .center')) || ctr($('#seats'));
+const discPt = () => ctr($('#discPile .dtop')) || deckPt();
+const handPt = () => (!$('#handwrap').hidden && ctr($('#handwrap .hand'))) || null;
+const playerPt = id => (id === S.me.id && handPt()) || ctr(seatEl(id));
+const screenMid = () => { const p = ctr($('#seats .felt')); return p && p.y > 80 && p.y < innerHeight - 80 ? p : { x: innerWidth / 2, y: innerHeight * 0.42 }; };
+const rotOf = id => { const el = document.querySelector(`[data-tr="${cssq(id)}"]`); return el ? +el.dataset.rot || 0 : 0; };
+const BACK = '<div class="fback"></div>', TBACK = '<div class="fback trial"></div>';
+
+function fly(from, to, html, o = {}){
+  if (!from || !to) { if (o.land) o.land(); return; }
+  const el = document.createElement('div'); el.className = 'flyer ' + (o.cls || ''); el.innerHTML = html; fxLayer.appendChild(el);
+  const w = el.offsetWidth, h = el.offsetHeight;
+  const s0 = o.s0 ?? .7, s1 = o.s1 ?? .6, sm = o.sm ?? 1, lift = o.lift ?? 60, spin = o.spin ?? (Math.random() * 24 - 12);
+  const tf = (p, s, r) => `translate(${p.x - w / 2}px,${p.y - h / 2}px) scale(${s}) rotate(${r}deg)`;
+  const mid = { x: (from.x + to.x) / 2, y: Math.min(from.y, to.y) - lift };
+  const an = el.animate([
+    { transform: tf(from, s0, 0), opacity: 0 },
+    { transform: tf(from, s0, 0), opacity: 1, offset: .08 },
+    { transform: tf(mid, sm, spin), opacity: 1, offset: .5 },
+    { transform: tf(to, s1, o.r1 || 0), opacity: 1, offset: .9 },
+    { transform: tf(to, s1, o.r1 || 0), opacity: o.keep ? 1 : 0 }
+  ], { duration: o.dur || 700, delay: o.delay || 0, easing: 'cubic-bezier(.25,.8,.35,1)', fill: 'both' });
+  an.onfinish = () => { el.remove(); if (o.land) o.land(); };
+}
+const ANNOUNCE = 5000, DAWN_MS = 13000; // dawn (who died / confessed) stays up longer // how long announcements (Night Falls, The Pact, Dawn, …) stay on screen
+function banner(html, cls = '', ms = ANNOUNCE){
+  const b = document.createElement('div'); b.className = 'fxbanner ' + cls; b.innerHTML = html;
+  const m = screenMid(); b.style.left = m.x + 'px'; b.style.top = m.y + 'px';
+  b.style.animation = `bannerIn .7s ease both, bannerOut .7s ease ${ms - 700}ms forwards`;
+  fxLayer.appendChild(b); setTimeout(() => b.remove(), ms);
+}
+function veil(cls, ms = ANNOUNCE){ const v = document.createElement('div'); v.className = 'veil ' + cls; v.style.animation = `veilIn .6s ease both, veilOut .8s ease ${ms - 800}ms forwards`; fxLayer.appendChild(v); setTimeout(() => v.remove(), ms); }
+function linkBeam(a, b){
+  const el = document.createElement('div'); el.className = 'beam';
+  const len = Math.hypot(b.x - a.x, b.y - a.y), ang = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
+  el.style.cssText = `left:${a.x}px;top:${a.y}px;width:${len}px;transform:rotate(${ang}deg)`;
+  fxLayer.appendChild(el); setTimeout(() => el.remove(), 2600);
+}
+function stamp(id, text, cls = ''){ const p = ctr(seatEl(id)); if (!p) return; const st = document.createElement('div'); st.className = 'stamp ' + cls; st.textContent = text; st.style.left = p.x + 'px'; st.style.top = p.y + 'px'; fxLayer.appendChild(st); setTimeout(() => st.remove(), 1500); }
+
+function fxDur(e){
+  switch (e.t) {
+    case 'deal': return 900 + 45 * Object.values(S.game.players).reduce((a, p) => a + (p.secrets ? p.secrets.length : 0), 0);
+    case 'draw': return 450 + 150 * (e.c || 1);
+    case 'special': return 650 + ANNOUNCE;
+    case 'play': return 850 + ((ct(e.card) === 'thievery' || ct(e.card) === 'fire') ? 140 * (e.c || 0) + 300 : ct(e.card) === 'blame' ? 900 + 110 * ((e.mv || []).length) : 0);
+    case 'flip': return 750; case 'trial': return 900; case 'raven': return 1100; case 'death': return e.night ? 900 : ANNOUNCE; case 'pass': return 1000; case 'dawn': return DAWN_MS; case 'shuffle': return 900; case 'covenpick': return 0; case 'sweep': return 500;
+    default: return 0;
+  }
+}
+
+function runFx(){
+  const g = S.game; if (!g || inFx) return;
+  const list = g.fx || []; const max = list.length ? list[list.length - 1].n : (g.fxN || 0);
+  if (fxSeen === null) { fxSeen = max; return; }
+  const fresh = list.filter(e => e.n > fxSeen); if (!fresh.length) return;
+  fxSeen = Math.max(fxSeen, max);
+  if (reduceMotion) return;
+  const now = Date.now(); if (fxBusyUntil - now > 15000) fxBusyUntil = now; // badly behind: catch up
+  let d = Math.max(0, fxBusyUntil - now); const plan = fresh.slice(-10).map(e => { const at = d; d += fxDur(e); return [e, at]; });
+  fxBusyUntil = now + d;
+  plan.forEach(([e, at]) => prepFx(g, e, at));
+  inFx = true; try { render(); } finally { inFx = false; }
+  plan.forEach(([e, at]) => setTimeout(() => playFx(e), at));
+}
+
+// Before the first frame: hide things that should only appear when an animation lands.
+function prepFx(g, e, at){
+  const P = g.players;
+  if (e.t === 'deal') {
+    let i = 0;
+    order(g).forEach(id => (P[id].secrets || []).forEach(sc => { mark('k:' + sc.k, 'hold', at + 45 * i + 800); i++; }));
+    if (P[S.me.id] && P[S.me.id].hand) P[S.me.id].hand.forEach(c => mark('card:' + c, 'hold', at + 45 * i + 1200));
+  }
+  if (e.t === 'draw' && e.p === S.me.id && P[e.p]) P[e.p].hand.slice(-e.c).forEach(c => mark('card:' + c, 'hold', at + 900 + 150 * e.c));
+  if (e.t === 'flip') mark('k:' + e.k, 'cover', at + 60);
+  if (e.t === 'raven') mark('fc:raven_0', 'hold', at + 1300);
+  if (e.t === 'play' && ['blue', 'red'].includes(CARD[ct(e.card)].c) || (e.t === 'play' && ct(e.card) === 'pillory')) mark('fc:' + e.card, 'hold', at + 900);
+  if (e.t === 'play' && e.mv) e.mv.forEach(id => mark('fc:' + id, 'hold', at + 2200));
+  if (e.t === 'pass') e.m.forEach(({ k }) => mark('k:' + k, 'hold', at + 1100));
+}
+
+function playFx(e){
+  const g = S.game; if (!g) return; const P = g.players;
+  switch (e.t) {
+    case 'deal': {
+      Sfx.play('shuffle');
+      let i = 0; const dk = deckPt();
+      order(g).forEach(id => (P[id].secrets || []).forEach(sc => {
+        const k = sc.k;
+        Sfx.play('flick', 700 + 45 * i);
+        fly(dk, trialPt(id, k), TBACK, { delay: 45 * i++, dur: 650, s0: .9, s1: 1, sm: 1.3, lift: 25, r1: rotOf(id), land: () => { mark('k:' + k, 'land', 450); render(); } });
+      }));
+      const mine = P[S.me.id] && P[S.me.id].hand ? P[S.me.id].hand : [];
+      mine.forEach((c, j) => fly(dk, handPt(), BACK, { delay: 45 * i + 120 * j, dur: 650, s1: .9, land: () => { mark('card:' + c, 'pop', 500); render(); } }));
+      break;
+    }
+    case 'draw': {
+      const me = e.p === S.me.id; const to = playerPt(e.p); const cards = me && P[e.p] ? P[e.p].hand.slice(-e.c) : [];
+      for (let j = 0; j < e.c; j++) { Sfx.play('flick', 150 * j); Sfx.play('place', 150 * j + 600); }
+      for (let j = 0; j < e.c; j++) fly(deckPt(), to, BACK, { delay: 150 * j, dur: 650, s1: me ? .9 : .5, land: () => {
+        if (me && cards[j]) { mark('card:' + cards[j], 'pop', 500); render(); } else if (!me) { mark('seat:' + e.p, 'bump', 400); render(); } } });
+      break;
+    }
+    case 'special': {
+      if (!e.first) Sfx.play('flick');
+      Sfx.play(e.card === 'night' ? 'night' : 'pact', 600);
+      if (!e.first) fly(deckPt(), screenMid(), cardHTML(e.card), { dur: 900, s0: .5, s1: 1.7, sm: 1.4, lift: 20, spin: 0 });
+      setTimeout(() => {
+        if (e.card === 'night') { veil('night'); banner(e.first ? '🌑 The First Night<small>The coven wakes and chooses where the Raven settles.</small>' : '🌑 Night Falls<small>The village sleeps. The coven wakes.</small>', 'night'); }
+        else { veil('pact'); banner('🩸 The Pact<small>Trial cards will change hands…</small>', 'pact'); }
+      }, 650);
+      break;
+    }
+    case 'play': {
+      const type = ct(e.card), C = CARD[type];
+      const stays = C.c === 'blue' || C.c === 'red' || type === 'pillory';
+      const fcPt = (pid, id) => ctr(document.querySelector(`[data-tr="${cssq(pid)}"] ${CARD[ct(id)].c === 'red' ? `[data-fct="${ct(id)}"]` : `[data-fc="${cssq(id)}"]`}`));
+      const toA = (stays && fcPt(e.a, e.card)) || ctr(seatEl(e.a));
+      Sfx.play('flick');
+      Sfx.play(C.c === 'red' ? 'thud' : 'place', 720);
+      if (C.c === 'blue') Sfx.play('glow', 780);
+      if (type === 'fire') Sfx.play('burn', 760);
+      if (type === 'thievery' || type === 'blame') for (let j = 0; j < Math.max(1, e.c || 1); j++) Sfx.play('flick', 900 + 140 * j);
+      fly(playerPt(e.p), toA, cardHTML(e.card), { dur: 800, s0: .6, s1: .45, sm: 1.05, r1: stays ? rotOf(e.a) : 0, land: () => {
+        mark('seat:' + e.a, 'hit-' + C.c, 800); if (stays) mark('fc:' + e.card, 'land', 500); render();
+        if (type === 'bound') { const o = boundPartner(S.game, e.a); if (o) { mark('seat:' + o, 'hit-blue', 900); render(); const pa = fcPt(e.a, e.card), pb = fcPt(o, (S.game.players[o].table.find(x => ct(x.id) === 'bound') || {}).id); if (pa && pb) linkBeam(pa, pb); } }
+        if (type === 'thievery' && e.b) for (let j = 0; j < e.c; j++) fly(ctr(seatEl(e.a)), ctr(seatEl(e.b)), BACK, { delay: 140 * j, dur: 600, s0: .5, s1: .5, land: () => { mark('seat:' + e.b, 'bump', 400); render(); } });
+        if (type === 'fire') for (let j = 0; j < e.c; j++) fly(ctr(seatEl(e.a)), discPt(), BACK, { delay: 140 * j, dur: 650, s0: .5, s1: .6, cls: 'burn' });
+        if (type === 'blame' && e.b) {
+          const from = ctr(document.querySelector(`[data-tr="${cssq(e.a)}"] .front`)) || ctr(document.querySelector(`[data-tr="${cssq(e.a)}"]`)) || ctr(seatEl(e.a));
+          (e.mv || []).forEach((id, j) => { Sfx.play('flick', 200 + 110 * j);
+            fly(from, fcPt(e.b, id) || ctr(seatEl(e.b)), cardHTML(id), { delay: 200 + 110 * j, dur: 750, s0: .45, s1: .45, sm: .6, r1: rotOf(e.b),
+              land: () => { mark('fc:' + id, 'land', 450); mark('seat:' + e.b, CARD[ct(id)].c === 'red' ? 'hit-red' : 'bump', 700); Sfx.play('place'); render(); } }); });
+        }
+        if (C.c === 'green' && type !== 'pillory') fly(ctr(seatEl(e.a)), discPt(), cardHTML(e.card), { delay: 250, dur: 550, s0: .45, s1: .35, sm: .5, lift: 20 });
+      } });
+      break;
+    }
+    case 'flip': Sfx.play('flip'); mark('k:' + e.k, 'flip', 800); render(); break;
+    case 'trial': Sfx.play('gavel'); mark('seat:' + e.p, 'trial', 1400); render(); stamp(e.p, 'TRIAL'); break;
+    case 'death': {
+      Sfx.play('death'); mark('seat:' + e.p, 'dying', 1300); render();
+      setTimeout(() => stamp(e.p, e.w ? '✝ WITCH' : '✝ INNOCENT', e.w ? 'deadwitch' : 'dead'), 250);
+      if (!e.night) { // a night death is already told by the dawn announcement
+        const who = esc(nm(g, e.p));
+        banner(`✝ ${who} is dead<small>${e.w ? `🧹 <b>They were a witch!</b>${e.passed ? ' Their Witch card was passed on in the Pact: someone else holds it now.' : ''}` : '🌾 They were <b>not</b> a witch.'}</small>`, e.w ? 'pact' : 'dead');
+      }
+      break;
+    }
+    case 'pass': {
+      e.m.forEach((_, j) => { Sfx.play('flick', 60 * j); Sfx.play('place', 60 * j + 800); });
+      e.m.forEach(({ from, to, k }, j) => fly(ctr(document.querySelector(`[data-tr="${cssq(from)}"]`)) || ctr(seatEl(from)), trialPt(to, k), TBACK,
+        { delay: 60 * j, dur: 850, s0: 1, s1: 1, sm: 1.3, lift: 30, r1: rotOf(to), land: () => { mark('k:' + k, 'land', 450); render(); } }));
+      break;
+    }
+    case 'raven': {
+      const to = ctr(document.querySelector(`[data-tr="${cssq(e.p)}"] [data-fc="raven_0"]`)) || ctr(seatEl(e.p));
+      Sfx.play('raven', 900);
+      fly(screenMid(), to, cardHTML('raven'), { dur: 1000, s0: 1.2, s1: .45, sm: 1.3, lift: 40, r1: rotOf(e.p), land: () => { mark('fc:raven_0', 'land', 500); mark('seat:' + e.p, 'hit-blue', 800); render(); } });
+      break;
+    }
+    case 'sweep': {
+      const from = ctr(document.querySelector(`[data-tr="${cssq(e.p)}"] .front`)) || ctr(document.querySelector(`[data-tr="${cssq(e.p)}"]`)) || ctr(seatEl(e.p));
+      e.ids.forEach((id, j) => { Sfx.play('flick', 90 * j); fly(from, discPt(), cardHTML(id), { delay: 90 * j, dur: 600, s0: .45, s1: .4, sm: .55, lift: 25 }); });
+      break;
+    }
+    case 'covenpick': {
+      const meP = g.players[S.me.id]; const canKnow = isWitch(meP) || (meP && meP.secrets && !meP.alive) || !(meP && meP.secrets);
+      if (!canKnow || !e.p || e.solo) break;
+      const how = e.tie ? `<small>The vote was tied between ${e.tied.map(id => esc(nm(g, id))).join(' and ')}: chosen at random.</small>` : e.none ? '<small>No one voted: chosen at random.</small>' : '<small>Chosen by the most votes.</small>';
+      Sfx.play('coven'); banner(`🧹 The coven chose ${esc(nm(g, e.p))}${how}`, 'pact', 3500);
+      break;
+    }
+    case 'shuffle': {
+      Sfx.play('shuffle');
+      const n = Math.min(8, Math.max(3, e.c || 0));
+      for (let j = 0; j < n; j++) fly(discPt(), deckPt(), BACK, { delay: 55 * j, dur: 520, s0: .8, s1: .8, lift: 30 });
+      break;
+    }
+    case 'dawn': {
+      const who = e.p ? esc(nm(g, e.p)) : '';
+      const conf = (e.conf || []).filter(id => id !== e.p).map(id => esc(nm(g, id)));
+      const lines = [];
+      const T_ = {
+        killed:    [`☠ ${who} was killed`, `The coven attacked <b>${who}</b>, who did not confess.`, 'dead'],
+        confessed: [`🕯 ${who} survived`, `The coven attacked <b>${who}</b>, but their confession saved them.`, 'dawn'],
+        guarded:   [`🏮 ${who} survived`, `The coven attacked <b>${who}</b>, but the Constable protected them.`, 'dawn'],
+        sanctuary: [`⛪ ${who} survived`, `The coven attacked <b>${who}</b>, but they slept in Sanctuary.`, 'dawn'],
+        none:      ['☀ Dawn', 'The coven attacked no one. No one died in the night.', 'dawn'],
+      }[e.res || 'none'];
+      lines.push(T_[1]);
+      if (e.res === 'killed') lines.push(e.w ? `🧹 <b>${who} was a witch!</b>${e.passed ? ' Their Witch card was passed on in the Pact: someone else holds it now.' : ''}` : `🌾 ${who} was <b>not</b> a witch.`);
+      if (e.res !== 'guarded') lines.push(e.save ? `🏮 The Constable protected <b>${esc(nm(g, e.save))}</b>.` : '🏮 The Constable protected no one.');
+      if (conf.length) lines.push(`🕯 Also confessed: ${conf.join(', ')}`);
+      Sfx.play(e.res === 'killed' ? 'death' : 'dawn');
+      veil(T_[2] === 'dead' ? 'blood' : 'dawn', DAWN_MS);
+      banner(`${T_[0]}${lines.map((l, k) => `<small class="${k ? 'also' : ''}">${l}</small>`).join('')}`, T_[2], DAWN_MS);
+      if (e.p) { mark('seat:' + e.p, e.res === 'killed' ? 'trial' : 'hit-green', 1400); render(); }
+      if (e.save && e.save !== e.p) { mark('seat:' + e.save, 'hit-blue', 1400); render(); }
+      break;
+    }
+    case 'win': Sfx.play(e.w === 'town' ? 'winTown' : 'winCoven', 200); setTimeout(() => { veil(e.w === 'town' ? 'dawn' : 'night'); banner(e.w === 'town' ? 'The town prevails' : 'The coven prevails', 'win ' + e.w); }, 200); break;
+  }
+}
+
+/* ---------- hand grouping ---------- */
+const CARD_ORDER = Object.keys(CARD);
+const COLOR_ORDER = { red:0, green:1, blue:2, black:3 };
+function handGroups(hand){
+  const by = {}; hand.forEach(c => { const t = ct(c); (by[t] = by[t] || { t, ids: [] }).ids.push(c); });
+  return Object.values(by).sort((a, b) => COLOR_ORDER[CARD[a.t].c] - COLOR_ORDER[CARD[b.t].c] || CARD_ORDER.indexOf(a.t) - CARD_ORDER.indexOf(b.t));
+}
+
+/* ---------- arranging trial cards ---------- */
+function tapArrange(i){
+  if (!S.arr) return;
+  if (S.arrSel === null || S.arrSel === undefined) { S.arrSel = i; return render(); }
+  if (S.arrSel !== i) { const a = S.arr.slice(); [a[S.arrSel], a[i]] = [a[i], a[S.arrSel]]; S.arr = a; }
+  S.arrSel = null; render();
+}
+let dragFrom = null;
+$('#prompt').addEventListener('dragstart', e => { const c = e.target.closest && e.target.closest('[data-arr]'); if (!c) return; dragFrom = +c.dataset.arr; c.classList.add('dragging'); try { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', String(dragFrom)); } catch(_) {} });
+$('#prompt').addEventListener('dragover', e => { const c = e.target.closest && e.target.closest('[data-arr]'); if (c && dragFrom !== null) { e.preventDefault(); document.querySelectorAll('.acard.over').forEach(x => x.classList.remove('over')); c.classList.add('over'); } });
+$('#prompt').addEventListener('drop', e => {
+  const c = e.target.closest && e.target.closest('[data-arr]'); if (!c || dragFrom === null || !S.arr) return; e.preventDefault();
+  const to = +c.dataset.arr; const a = S.arr.slice(); const [k] = a.splice(dragFrom, 1); a.splice(to, 0, k); S.arr = a; S.arrSel = null; dragFrom = null; render();
+});
+$('#prompt').addEventListener('dragend', () => { dragFrom = null; document.querySelectorAll('.acard.dragging,.acard.over').forEach(x => x.classList.remove('dragging','over')); });
+
+/* ---------- events ---------- */
+$('#createBtn').onclick = createGame;
+$('#joinBtn').onclick = () => joinGame($('#codeIn').value);
+$('#codeIn').addEventListener('keydown', e => { if (e.key === 'Enter') joinGame($('#codeIn').value); });
+$('#lobbies').addEventListener('click', e => { const b = e.target.closest('[data-join]'); if (b) joinGame(b.dataset.join); });
+$('#howBtn').onclick = () => { $('#modal').hidden = false; };
+$('#leaveTop').onclick = () => leaveGame();
+$('#sndBtn').onclick = () => { Sfx.toggle(); syncSndBtn(); };
+syncSndBtn();
+$('#sideBtn').onclick = () => { $('#side').classList.add('open'); seenChat = S.chat.length; updateUnread(); setTimeout(() => { const el = $('#chatlog'); el.scrollTop = el.scrollHeight; }, 50); };
+$('#closeSide').onclick = () => { $('#side').classList.remove('open'); };
+$('#closeHow').onclick = () => { $('#modal').hidden = true; };
+$('#modal').addEventListener('click', e => { if (e.target.id === 'modal') $('#modal').hidden = true; });
+$('#chatform').addEventListener('submit', sendChat);
+$('#chsel').addEventListener('change', render);
+$('#game').addEventListener('click', e => {
+  const t = e.target;
+  const tk = t.closest('[data-take]'); if (tk) { if (!waiting()) send({ a:'take', k: tk.dataset.take }); return; }
+  const sec = t.closest('[data-sec]'); if (sec) { const [o, i] = sec.dataset.sec.split(':'); return clickSecret(o, +i); }
+  const rm = t.closest('[data-rm]'); if (rm) return removeBot(rm.dataset.rm);
+  const card = t.closest('[data-card]'); if (card) return clickCard(card.dataset.card);
+  const ac = t.closest('[data-arr]'); if (ac) return tapArrange(+ac.dataset.arr);
+  const seat = t.closest('[data-pick]'); if (seat) return clickSeat(seat.dataset.pick);
+  switch (t.id) {
+    case 'drawBtn': return send({ a:'draw' });
+    case 'endBtn': return send({ a:'end' });
+    case 'cancelSel': S.sel = null; S.t1 = null; return render();
+    case 'qtyMinus': S.qty = Math.max(1, (S.qty || 1) - 1); return render();
+    case 'qtyPlus': S.qty = (S.qty || 1) + 1; return render();
+    case 'qtyAll': S.qty = 99; return render();
+    case 'noConfess': return send({ a:'confess', idx:-1 });
+    case 'arrReady': return S.arr && send({ a:'arrange', order:S.arr.slice() });
+    case 'arrShuffle': if (S.arr) { S.arr = shuffle(S.arr); S.arrSel = null; render(); } return;
+    case 'botBtn': return addBot();
+    case 'startBtn': return startGame();
+    case 'againBtn': return playAgain();
+    case 'takeBtn': return takeOver();
+    case 'leaveBtn': return leaveGame();
+    case 'copyCode': { const link = location.origin + location.pathname + '#' + S.code; try { navigator.clipboard.writeText(link).then(() => toast('Invite link copied. Send it to your friends!'), () => toast(link)); } catch(_) { toast(link); } return; }
+  }
+});
+$('#game').addEventListener('keydown', e => { const ar = e.target.closest && e.target.closest('[data-arr]'); if (ar && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); return tapArrange(+ar.dataset.arr); } const p = e.target.closest && e.target.closest('[data-pick]'); if (p && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); clickSeat(p.dataset.pick); } });
+$('#game').addEventListener('change', e => {
+  const g = S.game; if (!g || g.host !== S.me.id || e.target.id !== 'turnLen') return;
+  const settings = { ...g.settings, turn: +e.target.value }; S.game = { ...g, settings }; W(gPath(), 'update', { settings, updatedAt:Date.now() });
+});
+
+setInterval(() => { hostTick(); renderTimer(); }, 400);
+let rsz; window.addEventListener('resize', () => { clearTimeout(rsz); rsz = setTimeout(render, 120); });
+let lastMissing = false, lastWait = false;
+setInterval(() => { if (!S.game) return; const m = hostMissing(S.game), w = waiting(); if (m !== lastMissing || w !== lastWait) { lastMissing = m; lastWait = w; render(); } }, 1000);
+window.__salem = { S, living, isWitch, hidden };
+init();
+})();
+</script>
+</body>
+</html>

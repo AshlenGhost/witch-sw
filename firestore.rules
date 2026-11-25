@@ -1,0 +1,12 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Any signed-in player (anonymous sign-in) can read and write games and everything inside them.
+    match /games/{code} {
+      allow read, write: if request.auth != null;
+      match /{rest=**} {
+        allow read, write: if request.auth != null;
+      }
+    }
+  }
+}
