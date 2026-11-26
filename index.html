@@ -139,7 +139,7 @@ label{display:block;font-size:13px;color:var(--dim);margin-bottom:6px}
 .trials{display:block}
 .trials .front{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);margin-bottom:6px}
 .front{display:flex;gap:7px;justify-content:center}
-.fcard{width:48px;height:64px;border-radius:5px;background:#efe3c8;color:#2a1d12;border-top:12px solid var(--cc);box-shadow:0 3px 8px rgba(0,0,0,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;cursor:help}
+.fcard{width:54px;height:72px;border-radius:5px;background:#efe3c8;color:#2a1d12;border-top:12px solid var(--cc);box-shadow:0 3px 8px rgba(0,0,0,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;cursor:help}
 .fcard b{font-size:21px;line-height:1;font-weight:400}
 .fcard span{font-size:8px;font-weight:600;line-height:1.05;text-align:center;margin-top:2px;padding:0 1px}
 .fcard em{position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-style:normal;font-size:9.5px;color:#cfe0f7;white-space:nowrap;text-shadow:0 1px 2px #000}
@@ -162,9 +162,9 @@ label{display:block;font-size:13px;color:var(--dim);margin-bottom:6px}
 .acard.over{box-shadow:0 0 0 3px var(--gold)}
 .acard.dragging{opacity:.4}
 .trials.gone{opacity:.75}
-.tc{width:30px;height:42px;border-radius:4px;position:relative;display:grid;place-items:center;font-size:17px;box-shadow:0 2px 5px rgba(0,0,0,.55);transition:transform .15s}
+.tc{width:36px;height:50px;border-radius:5px;position:relative;display:grid;place-items:center;font-size:20px;box-shadow:0 2px 5px rgba(0,0,0,.55);transition:transform .15s}
 .tc.back{background:#5e1c17 repeating-linear-gradient(45deg,rgba(0,0,0,.2) 0 3px,transparent 3px 6px);border:1px solid #c9a24a88}
-.tc.back:before{content:"TRIAL";position:absolute;writing-mode:vertical-rl;font:600 7px/1 var(--body);letter-spacing:1.5px;color:#e8c77a}
+.tc.back:before{content:"TRIAL";position:absolute;writing-mode:vertical-rl;font:600 8px/1 var(--body);letter-spacing:2px;color:#e8c77a}
 .tc.back i{position:absolute;right:1px;bottom:0;font-style:normal;font-size:10px;opacity:.85}
 .tc.up{background:#efe3c8;border:1px solid #efe3c8}
 .tc.up.witch{background:#bfe3a5;border-color:#bfe3a5}
@@ -177,9 +177,9 @@ label{display:block;font-size:13px;color:var(--dim);margin-bottom:6px}
 .seats.compact .sh{gap:6px}
 .seats.compact .sh .sub{display:none}
 .seats.compact .meter .hc{display:inline}
-.seats.compact .tc{width:24px;height:34px;font-size:14px}
+.seats.compact .tc{width:28px;height:40px;font-size:16px}
 .seats.compact .tc.back:before{font-size:6px;letter-spacing:1px}
-.seats.compact .fcard{width:30px;height:40px;border-top-width:8px}
+.seats.compact .fcard{width:38px;height:50px;border-top-width:9px}
 .seats.compact .fcard b{font-size:13px} .seats.compact .fcard span{font-size:5.5px}
 .seat .rm ~ .sh{padding-right:18px}
 .meter{margin-top:6px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--dim)}
@@ -232,7 +232,7 @@ label{display:block;font-size:13px;color:var(--dim);margin-bottom:6px}
 :root{--barh:53px}
 body.ingame{overflow:hidden}
 body.ingame #game{height:calc(100vh - var(--barh));height:calc(100dvh - var(--barh))}
-#game{max-width:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr) 310px;grid-template-rows:minmax(0,1fr)}
+#game{max-width:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
 .stage{display:flex;flex-direction:column;min-width:0;min-height:0}
 .tablearea{flex:1;min-height:0;display:grid;place-items:center;padding:14px 10px 6px;overflow:hidden}
 #seats.seats{margin:0;aspect-ratio:auto}
@@ -241,6 +241,8 @@ body.night .dock{background:linear-gradient(#10131bf2,#0b0d12f7)}
 #prompt{background:none;border:none;padding:0 0 0 10px;border-left:3px solid var(--ember);border-radius:0;font-size:14px;line-height:1.4}
 #prompt.calm{border-left-color:var(--line);color:var(--dim)}
 #prompt h2{font-size:19px;display:inline;margin:0 8px 0 0;color:var(--ink)}
+#prompt{max-height:170px;overflow-y:auto}
+#handwrap .hand{scrollbar-width:thin}
 #prompt .act{margin-top:6px}
 #prompt .codebox{margin-top:4px}
 .dockrow{display:flex;gap:12px;align-items:flex-end;min-height:0}
@@ -270,6 +272,7 @@ body.night .dock{background:linear-gradient(#10131bf2,#0b0d12f7)}
 .confess{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap}
 .confess .acard{width:58px;height:78px;cursor:pointer}
 .confess .acard b{font-size:22px}
+.confess .acard small,.arrange .acard small{font-size:8px;letter-spacing:0}
 .confess .acard.up{opacity:.35;cursor:not-allowed}
 #sideBtn{position:relative;padding:6px 10px}
 #unread{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;background:var(--ember);color:#1a0f08;font-size:11px;font-weight:700;line-height:18px;padding:0 4px}
@@ -304,6 +307,26 @@ body.night .dock{background:linear-gradient(#10131bf2,#0b0d12f7)}
   .bar .lg{display:none} .bar .sm{display:inline}
 }
 
+/* ---- dock: Hand | Trial cards | Town record ---- */
+.dockrow{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(220px,300px) minmax(240px,360px);gap:12px;align-items:stretch}
+.dhand{display:flex;gap:12px;align-items:flex-end;min-width:0}
+.dhand #handwrap{flex:1}
+.dpanel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:0;min-height:0;max-height:150px;overflow:auto}
+.dpanel h3{font-size:14px;margin:0 0 4px}
+#mysec.dpanel .big{margin-top:2px;gap:6px}
+#mysec.dpanel .tc{width:40px;height:56px;font-size:17px;gap:2px}
+#mysec.dpanel .tc small{font-size:6.5px;letter-spacing:0} #mysec.dpanel .tc em{display:none}
+#mysec.dpanel p{font-size:12px;margin:5px 0 0;line-height:1.35}
+.logpanel{display:flex;flex-direction:column}
+.logpanel .log{flex:1;max-height:none;min-height:0;overflow-y:auto;font-size:13.5px;gap:3px}
+@media (max-width:900px){
+  .dockrow{grid-template-columns:1fr 1fr;gap:6px}
+  .dhand{grid-column:1 / -1}
+  .dpanel{max-height:92px;padding:6px 8px}
+  #mysec.dpanel .tc{width:28px;height:40px;font-size:13px} #mysec.dpanel .tc small{display:none}
+  #mysec.dpanel p{font-size:11px}
+  .logpanel .log{font-size:12px}
+}
 /* animations */
 #fx{position:fixed;inset:0;pointer-events:none;z-index:15;overflow:hidden}
 .flyer{position:absolute;left:0;top:0;will-change:transform,opacity}
@@ -313,7 +336,7 @@ body.night .dock{background:linear-gradient(#10131bf2,#0b0d12f7)}
 .flyer.burn .fback{background:#8a3a1a;box-shadow:0 0 18px 6px rgba(255,120,40,.65)}
 .flyer.ghost{opacity:.7}
 .fxbanner{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);font-family:var(--head);font-size:58px;line-height:1.1;color:var(--ink);text-shadow:0 4px 30px #000,0 0 2px #000;text-align:center;white-space:nowrap;max-width:92vw}
-.fxbanner{padding:18px 60px;background:radial-gradient(ellipse at center,rgba(6,5,4,.78) 0%,rgba(6,5,4,.5) 45%,transparent 72%)}
+.fxbanner{white-space:normal!important;width:max-content;max-width:min(1100px,92vw);text-align:center;padding:18px 60px;background:radial-gradient(ellipse at center,rgba(6,5,4,.78) 0%,rgba(6,5,4,.5) 45%,transparent 72%)}
 .fxbanner small{white-space:normal;max-width:min(760px,88vw);margin-left:auto;margin-right:auto;line-height:1.35;display:block;font-family:var(--fell);font-style:italic;font-size:20px;color:#d8c9a8;margin-top:6px}
 .fxbanner.night{color:#cfe0f7} .fxbanner.dead{color:#ff8f84} .fxbanner small.also{font-size:16px;color:#cdbf9f;margin-top:8px}
 .fxbanner small b{color:var(--ink);font-weight:600;font-style:normal} .fxbanner.dawn{color:#f2d58c} .fxbanner.pact{color:var(--witch)}
@@ -389,13 +412,50 @@ body.night .dock{background:linear-gradient(#10131bf2,#0b0d12f7)}
   .brand span{display:none}
   #phase{font-size:15px}
 }
+
+/* ---- everything on the table scales with --u, chosen by the layout so nothing overlaps ---- */
+#seats{--u:1;--us:1}
+#seats .felt{right:auto;bottom:auto}
+#seats .seat{width:calc(136px*var(--us));padding:calc(8px*var(--us)) calc(10px*var(--us));border-radius:calc(12px*var(--us))}
+#seats .sh{gap:calc(8px*var(--us))}
+#seats .av{width:calc(32px*var(--us));height:calc(32px*var(--us));font-size:calc(17px*var(--us))}
+#seats .sh .nm{font-size:calc(14px*var(--us))}
+#seats .sh .sub{font-size:calc(11.5px*var(--us))}
+#seats .tags{margin-top:calc(5px*var(--us));gap:calc(3px*var(--us))}
+#seats .t{font-size:calc(11px*var(--us));padding:0 calc(6px*var(--us))}
+#seats .meter{margin-top:calc(6px*var(--us));gap:calc(8px*var(--us));font-size:calc(12px*var(--us))}
+#seats .meter .mb{height:calc(7px*var(--us))}
+#seats .marks{font-size:calc(11px*var(--us));margin-top:calc(4px*var(--us))}
+#seats .rm{width:calc(24px*var(--us));height:calc(24px*var(--us));font-size:calc(12px*var(--us))}
+#seats .trow{gap:calc(4px*var(--u))}
+#seats .tc{width:calc(36px*var(--u));height:calc(50px*var(--u));font-size:calc(20px*var(--u));border-radius:calc(5px*var(--u))}
+#seats .tc.back:before{font-size:calc(8px*var(--u));letter-spacing:calc(2px*var(--u))}
+#seats .tc.back i{font-size:calc(10px*var(--u))}
+#seats .front{gap:calc(7px*var(--u));margin-bottom:calc(6px*var(--u))}
+#seats .fcard{width:calc(54px*var(--u));height:calc(72px*var(--u));border-top-width:calc(12px*var(--u));border-radius:calc(5px*var(--u))}
+#seats .fcard b{font-size:calc(21px*var(--u))}
+#seats .fcard span{font-size:calc(8px*var(--u));display:block}
+#seats .fcard u{font-size:calc(9px*var(--u));top:calc(-11px*var(--u));line-height:calc(11px*var(--u))}
+#seats .fcard em{font-size:calc(9.5px*var(--u));top:calc(-15px*var(--u))}
+#seats .fcard .fcnt{min-width:calc(20px*var(--u));height:calc(20px*var(--u));font-size:calc(11px*var(--u));line-height:calc(20px*var(--u));top:calc(-9px*var(--u));left:calc(-9px*var(--u))}
+#seats .center{gap:calc(12px*var(--u))}
+#seats.sidefront .trials .front{bottom:0;left:100%;transform:none;margin:0 0 0 calc(12px*var(--u))}
+#seats .ctext{font-size:calc(14px*var(--u))}
+#seats .ctext b{font-size:calc(20px*var(--u))}
+#seats .pile{width:calc(54px*var(--u));height:calc(96px*var(--u));display:flex}
+#seats .pile small{font-size:calc(11px*var(--u))}
+#seats .cb,#seats .dtop{width:calc(52px*var(--u));height:calc(72px*var(--u))}
+#seats .cb span{font-size:calc(15px*var(--u))}
+#seats .dtop{font-size:calc(20px*var(--u));border-top-width:calc(12px*var(--u))}
+#seats .dtop span{font-size:calc(8.5px*var(--u))}
+#seats.compact .sh .sub{display:none}
+#seats.compact .meter .hc{display:inline}
 </style>
 </head>
 <body>
 <header class="bar">
   <div class="brand">The Salem <span>Trials</span></div>
   <div id="phase"></div>
-  <button id="sideBtn" class="ghost" hidden aria-label="Open chat and log">💬<span id="unread" hidden></span></button>
   <button id="sndBtn" class="ghost">🔊</button>
   <button id="howBtn" class="ghost" aria-label="How to play"><span class="lg">How to play</span><span class="sm">?</span></button>
   <button id="leaveTop" class="ghost" hidden>Leave</button>
@@ -428,22 +488,13 @@ body.night .dock{background:linear-gradient(#10131bf2,#0b0d12f7)}
     <div id="tablearea" class="tablearea"><div id="seats" class="seats"></div></div>
     <div class="dock">
       <div id="prompt"></div>
-      <div class="dockrow"><div id="handwrap"></div><div id="hostbar"></div></div>
+      <div class="dockrow">
+        <div class="dhand"><div id="handwrap"></div><div id="hostbar"></div></div>
+        <div id="mysec" class="dpanel"></div>
+        <div class="dpanel logpanel"><h3>Town record</h3><div id="log" class="log"></div></div>
+      </div>
     </div>
   </div>
-  <aside class="side" id="side">
-    <div class="sidehead"><b>The village</b><button id="closeSide" class="ghost" aria-label="Close">✕</button></div>
-    <div id="mysec" class="panel"></div>
-    <div class="panel chatpanel">
-      <div id="chatlog" class="chatlog"></div>
-      <form id="chatform">
-        <select id="chsel" aria-label="Channel"></select>
-        <input id="chatin" maxlength="300" placeholder="Speak to the village…" autocomplete="off">
-        <button>Send</button>
-      </form>
-    </div>
-    <div class="panel logpanel"><h3>Town record</h3><div id="log" class="log"></div></div>
-  </aside>
 </section>
 
 <div id="modal" hidden><div class="panel">
@@ -461,9 +512,9 @@ body.night .dock{background:linear-gradient(#10131bf2,#0b0d12f7)}
     <li><b style="color:#9ab8e3">Blue</b> cards lie face up on the table in front of a player: Sanctuary (safe at night), Devotion (needs 14 accusation points to go on trial instead of 7), Bound Souls (there are two; when both are on the table, the two players they lie in front of are linked and die together).</li>
   </ul>
   <h3>Night Falls</h3>
-  <p>Drawing this card starts a night. The coven secretly votes on a victim (30 seconds; most votes wins, a tie is decided at random between the tied choices), then the Constable guards someone (not themselves). At dawn, anyone may <b>confess</b> by turning over one of their own trial cards. The marked player dies unless they were guarded, confessed, or are in Sanctuary. Dawn announces who the Constable protected, who the coven attacked, and what happened. When the night ends, the discard pile is shuffled back into the deck, and Night Falls always goes among the last 10 cards.</p>
+  <p>Drawing this card starts a night. The coven secretly votes on a victim (30 seconds; most votes wins, a tie is decided at random between the tied choices), then the Constable guards someone (not themselves). <b>Who the Constable protects is announced to everyone for 10 seconds</b>, so that player knows they don’t need to confess. A Constable whose card has been revealed can no longer protect anyone. At dawn, anyone may <b>confess</b> by turning over one of their own trial cards. The marked player dies unless they were guarded, confessed, or are in Sanctuary. Dawn announces who the Constable protected, who the coven attacked, and what happened. When the night ends, the discard pile is shuffled back into the deck, and Night Falls always goes among the last 10 cards.</p>
   <h3>The Pact</h3>
-  <p><b>The Raven</b> is a blue card the coven places face up in front of a player on the first night. After that it acts like any other blue card: Hex Breaker can discard it, Blame moves it, and once discarded it can be drawn and played again. When <b>The Pact</b> is drawn, the player who drew it turns over one trial card of whoever holds the Raven. Then every living player chooses one face-down trial card (by its position) to take from the player on their left. A villager who takes a Witch card joins the coven, and <b>once a witch, always a witch</b>: even if your Witch card is later taken, you stay in the coven. The town still wins once every Witch card has been revealed. <b>When a player dies, everyone learns whether they were a witch.</b> A dead witch with no Witch card among their trial cards must have passed it on in the Pact, so it is now in someone else’s hands.</p>
+  <p><b>The Raven</b> is a blue card the coven places face up in front of any player on the first night (even a witch, themselves included). After that it acts like any other blue card: Hex Breaker can discard it, Blame moves it, and once discarded it can be drawn and played again. When <b>The Pact</b> is drawn, the player who drew it turns over one trial card of whoever holds the Raven. Then every living player chooses one face-down trial card (by its position) to take from the player on their left. A villager who takes a Witch card joins the coven, and <b>once a witch, always a witch</b>: even if your Witch card is later taken, you stay in the coven. The town still wins once every Witch card has been revealed. <b>When a player dies, everyone learns whether they were a witch.</b> A dead witch with no Witch card among their trial cards must have passed it on in the Pact, so it is now in someone else’s hands.</p>
   <h3>The cards</h3>
   <div class="showcase" id="allcards"></div>
   <div class="row"><button id="closeHow" class="primary">Got it</button></div>
@@ -497,7 +548,7 @@ const CARD = {
   testimony:  { n:'Testimony',   c:'red',   pts:3, i:'📜', txt:'Place on a player: 3 accusation points.' },
   eyewitness: { n:'Eyewitness',  c:'red',   pts:7, i:'👁️', txt:'Place on a player: 7 points. Instant trial.' },
   defense:    { n:'Defense',     c:'green', i:'🕊️', txt:'Remove up to 3 accusation points from a player.' },
-  pillory:    { n:'Pillory',     c:'green', i:'⛓️', txt:'A player loses their next turn.' },
+  pillory:    { n:'Pillory',     c:'green', i:'↪️', txt:'A player loses their next turn.' },
   fire:       { n:'Fire',        c:'green', i:'🔥', txt:'A player discards their whole hand.' },
   hexbreaker: { n:'Hex Breaker', c:'green', i:'✂️', txt:'Discard 1 blue card in front of a player.' },
   thievery:   { n:'Thievery',    c:'green', two:true, i:'💰', txt:'Take a player’s hand and give it to any player.' },
@@ -517,6 +568,7 @@ const COLORS = ['#d0643f','#c9a24a','#8fbf6a','#8aa4c8','#c57fa0','#d9b27c','#7f
 const MULTI = new Set(['rumor', 'testimony', 'eyewitness', 'defense']);
 const MAXP = 12, MINP = 4, TRIAL = 7, DEVOTED = 14;
 const trialAt = p => (p && hasBlue(p, 'devotion')) ? DEVOTED : TRIAL;
+const GUARD_MS = 10000; // how long the Constable's protection is announced before confessions
 const T = { take:35000, arrange:45000, mark:30000, save:25000, confess:25000, choose:30000, stageMin:2500, bot:1300 };
 const ct = id => String(id).split('_')[0];
 
@@ -686,13 +738,12 @@ async function enterGame(code, g){
   S.seq = (g.seen || {})[S.me.id] || 0;
   S.mine = { name: nick(), joinedAt: Date.now(), seq:S.seq, intent:null };
   W(pPath(), 'set', clone(S.mine));
-  $('#home').hidden = true; $('#game').hidden = false; document.body.classList.add('ingame'); $('#sideBtn').hidden = false; $('#leaveTop').hidden = false;
+  $('#home').hidden = true; $('#game').hidden = false; document.body.classList.add('ingame'); $('#leaveTop').hidden = false;
   if (!offline) { try { history.replaceState(null, '', '#' + code); } catch(e) {} }
   subs.push(db.doc(gPath()).onSnapshot(sn => { if (sn.exists) { S.game = sn.data(); render(); } }, () => toast('Lost connection to the game.')));
   subs.push(db.collection(`games/${code}/players`).onSnapshot(sn => {
     const m = {}; sn.docs.forEach(d => { m[d.id] = d.data(); }); S.pdocs = m; if (!sn.metadata || !sn.metadata.fromCache) S.pdocsLoaded = true; render();
   }));
-  subs.push(db.collection(`games/${code}/chat`).orderBy('ts','desc').limit(150).onSnapshot(sn => { S.chat = sn.docs.map(d => d.data()).reverse(); renderChat(); }));
   if (roomCap && typeof roomCap.join === 'function') {
     try {
       roomH = await roomCap.join('salem-' + code);
@@ -713,7 +764,7 @@ async function leaveGame(){
   if (roomH) { try { roomH.leave(); } catch(e) {} roomH = null; }
   S.code = null; S.game = null;
   document.body.classList.remove('night');
-  $('#game').hidden = true; $('#home').hidden = false; document.body.classList.remove('ingame'); $('#sideBtn').hidden = true; $('#leaveTop').hidden = true; $('#side').classList.remove('open'); $('#phase').innerHTML = ''; $('#phase')._h = '';
+  $('#game').hidden = true; $('#home').hidden = false; document.body.classList.remove('ingame'); $('#leaveTop').hidden = true; $('#phase').innerHTML = ''; $('#phase')._h = '';
   try { history.replaceState(null, '', location.pathname + location.search); } catch(e) {}
 }
 
@@ -726,7 +777,8 @@ const hidden = p => (p && p.secrets ? p.secrets.map((s,i) => s.up ? -1 : i).filt
 const holdsWitch = p => !!(p && p.alive && p.secrets && p.secrets.some(s => s.t === 'witch' && !s.up));
 const isWitch = p => !!(p && p.alive && (p.coven || holdsWitch(p)));
 const markCoven = g => Object.values(g.players).forEach(p => { if (holdsWitch(p)) p.coven = true; });
-const isConst = p => !!(p && p.alive && p.secrets && p.secrets.some(s => s.t === 'constable'));
+// Only a hidden Constable can protect: once the Constable card is face up, its power is gone.
+const isConst = p => !!(p && p.alive && p.secrets && p.secrets.some(s => s.t === 'constable' && !s.up));
 // The other living player who also has a Bound Souls card in front of them (the two are linked).
 const boundPartner = (g, uid) => Object.keys(g.players).find(id => id !== uid && g.players[id].alive && hasBlue(g.players[id], 'bound')) || null;
 const ravenHolder = g => living(g).find(id => hasBlue(g.players[id], 'raven')) || null;
@@ -981,7 +1033,7 @@ function stageTick(g, now){
     let ch = false; const A = living(g); const W = A.filter(id => isWitch(P[id]));
     const targets = pd.type === 'raven' ? A : A.filter(id => !isWitch(P[id]));
     W.filter(id => P[id].bot && !pd.votes[id]).forEach(id => {
-      const pool = pd.type === 'raven' ? targets.filter(t => !isWitch(P[t])) : targets;
+      const pool = pd.type === 'raven' ? (rand() < 0.25 ? targets : targets.filter(t => !isWitch(P[t]))) : targets;
       pd.votes[id] = pool.length ? rnd(pool) : rnd(targets); ch = true; });
     const done = now - pd.at > T.stageMin && (W.every(id => pd.votes[id]) || now > pd.deadline);
     if (!done) return ch;
@@ -1005,14 +1057,16 @@ function stageTick(g, now){
     if (c && P[c].bot && pd.save == null) { pd.save = rnd(A.filter(id => id !== c)) || null; }
     const done = now - pd.at > T.stageMin && (!c || pd.save != null || now > pd.deadline);
     if (!done) return false;
-    pd.stage = 'confess'; pd.at = now; pd.deadline = now + T.confess; return true;
+    pd.stage = 'confess'; pd.at = now; pd.deadline = now + T.confess + GUARD_MS;
+    if (c) { fx(g, { t:'guard', p: pd.save || null }); lg(g, pd.save ? `🏮 The Constable is protecting ${P[pd.save].name} tonight.` : '🏮 The Constable is protecting no one tonight.', 'n'); }
+    return true;
   }
   if (pd.type === 'night' && pd.stage === 'confess') {
     let ch = false; const A = living(g);
     A.filter(id => P[id].bot && pd.conf[id] === undefined).forEach(id => {
       const inn = hidden(P[id]).filter(i => P[id].secrets[i].t !== 'witch');
       pd.conf[id] = inn.length > 1 && rand() < 0.35 ? rnd(inn) : -1; ch = true; });
-    const done = now - pd.at > T.stageMin && (A.every(id => pd.conf[id] !== undefined) || now > pd.deadline);
+    const done = now - pd.at > GUARD_MS && (A.every(id => pd.conf[id] !== undefined) || now > pd.deadline);
     if (!done) return ch;
     resolveNight(g, now); return true;
   }
@@ -1242,29 +1296,69 @@ function clickSecret(owner, idx){
 let witchConfirm = null;
 function confirmWitch(idx){ if (witchConfirm === idx) { witchConfirm = null; return true; } witchConfirm = idx; toast('Revealing your Witch trial card will kill you. Tap it again to confess anyway.'); return false; }
 
-/* ---------- chat ---------- */
-function me_(){ const g = S.game; const p = g && g.players[S.me.id]; return { g, p, inGame: !!(p && p.secrets), alive: !!(p && p.alive), witch: isWitch(p) }; }
-function canSend(ch){
-  const { g, inGame, alive, witch } = me_(); if (!g) return false;
-  const play = g.phase === 'play'; const night = play && g.pending && (g.pending.type === 'night' || g.pending.type === 'raven');
-  if (ch === 'town') return !play || (alive && !night);
-  if (ch === 'coven') return play && witch;
-  if (ch === 'spirits') return play && (!inGame || !alive);
-  return false;
+/* ---------- table layout: the largest size at which nothing overlaps ---------- */
+// Seats sit on the rim of an oval that fills the free space, spaced evenly by distance around the rim.
+// Each player's trial cards lie just inside their seat, square to them; their blue/accusation cards lie inside that.
+// We try sizes from large to small and keep the largest one where no seat, card row or the deck touches another.
+const LB = { seatW:136, cw:36, ch:50, cg:4, fw:54, fh:72, fg:7, gap:7, fgap:6, flabel:16, cenW:200, cenH:92, margin:6 };
+let layoutCache = { key:null, res:null }, seatHBase = 100;
+const SEAT_MAX = 0.85;
+function rimAngles(rx, ry, n){
+  const N = 720, ts = [], cum = [0];
+  for (let i = 0; i <= N; i++) { const t = Math.PI / 2 + i * 2 * Math.PI / N; ts.push(t);
+    if (i) { const a = ts[i - 1]; cum.push(cum[i - 1] + Math.hypot(rx * (Math.cos(t) - Math.cos(a)), ry * (Math.sin(t) - Math.sin(a)))); } }
+  const L = cum[N], out = []; let j = 0;
+  for (let k = 0; k < n; k++) { const want = L * k / n; while (j < N - 1 && cum[j + 1] < want) j++; const f = (want - cum[j]) / ((cum[j + 1] - cum[j]) || 1); out.push(ts[j] + f * (ts[j + 1] - ts[j])); }
+  return out;
 }
-function canSee(ch){
-  const { g, inGame, alive, witch } = me_(); if (!g) return false;
-  if (ch === 'town' || g.phase !== 'play') return true;
-  if (ch === 'coven') return witch || !alive || !inGame;
-  return !alive || !inGame;
+function obb(cx, cy, w, h, rot){ w += 4; h += 4; /* a little breathing room */ const c = Math.cos(rot), s = Math.sin(rot); return [[-w/2,-h/2],[w/2,-h/2],[w/2,h/2],[-w/2,h/2]].map(([x, y]) => [cx + x * c - y * s, cy + x * s + y * c]); }
+function boxesHit(A, B){
+  for (const Q of [A, B]) for (let i = 0; i < 4; i++) {
+    const [x1, y1] = Q[i], [x2, y2] = Q[(i + 1) % 4], nx = y2 - y1, ny = x1 - x2;
+    let a1 = Infinity, a2 = -Infinity, b1 = Infinity, b2 = -Infinity;
+    for (const [x, y] of A) { const v = x * nx + y * ny; if (v < a1) a1 = v; if (v > a2) a2 = v; }
+    for (const [x, y] of B) { const v = x * nx + y * ny; if (v < b1) b1 = v; if (v > b2) b2 = v; }
+    if (a2 <= b1 || b2 <= a1) return false;
+  }
+  return true;
 }
-async function sendChat(e){
-  e.preventDefault();
-  const text = $('#chatin').value.trim(); const ch = $('#chsel').value;
-  if (!text || !canSend(ch) || Date.now() - lastChatSend < 700) return;
-  lastChatSend = Date.now(); $('#chatin').value = '';
-  try { await db.collection(`games/${S.code}/chat`).add({ uid:S.me.id, name:(S.game.players[S.me.id] || {}).name || nick(), ch, text:text.slice(0,300), ts:Date.now() }); }
-  catch(err) { toast(err && err.code === 'invalid_argument' ? 'Message not sent. Refresh and try again.' : 'Message not sent.'); $('#chatin').value = text; }
+function placeTable(W, H, specs, u, force, side){
+  const B = LB, us = Math.min(u, SEAT_MAX), sw = B.seatW * us, sh = seatHBase * us, n = specs.length; // seats stop growing before cards do
+  const rx = W / 2 - sw / 2 - B.margin, ry = H / 2 - sh / 2 - B.margin; if (!force && (rx < 30 || ry < 30)) return null;
+  const res = { u, side: !!side, rx: Math.max(rx, 30), ry: Math.max(ry, 30), seats: [], rows: [] }, boxes = [];
+  rimAngles(res.rx, res.ry, n).forEach((t, k) => {
+    const sx = W / 2 + res.rx * Math.cos(t), sy = H / 2 + res.ry * Math.sin(t);
+    let nx = Math.cos(t) / res.rx, ny = Math.sin(t) / res.ry; const nl = Math.hypot(nx, ny) || 1; nx /= nl; ny /= nl; // outward normal of the rim
+    const rot = Math.atan2(ny, nx) - Math.PI / 2, dS = Math.abs(nx) * sw / 2 + Math.abs(ny) * sh / 2;
+    const sp = specs[k], rowL = (Math.max(1, sp.c) * (B.cw + B.cg) - B.cg) * u, rowH = B.ch * u, d = dS + B.gap * u + rowH / 2;
+    const rcx = sx - nx * d, rcy = sy - ny * d;
+    res.seats.push({ x: sx, y: sy }); res.rows.push({ x: rcx, y: rcy, deg: Math.round(rot * 180 / Math.PI) });
+    boxes.push({ k, q: obb(sx, sy, sw, sh, 0) });
+    if (sp.c) boxes.push({ k, q: obb(rcx, rcy, rowL, rowH, rot) });
+    if (sp.f) { const fl = (sp.f * (B.fw + B.fg) - B.fg) * u, fh = (B.fh + B.flabel) * u;
+      if (side) { // beside the trial row (to the owner's right), bottoms lined up
+        const tx = Math.cos(rot), ty = Math.sin(rot), off = rowL / 2 + 2 * B.fgap * u + fl / 2, e2 = (fh - rowH) / 2;
+        boxes.push({ k, q: obb(rcx + tx * off - nx * e2, rcy + ty * off - ny * e2, fl, fh, rot) });
+      } else { const e = rowH / 2 + B.fgap * u + fh / 2; boxes.push({ k, q: obb(rcx - nx * e, rcy - ny * e, fl, fh, rot) }); } }
+  });
+  if (force) return res;
+  boxes.push({ k: -1, q: obb(W / 2, H / 2, B.cenW * u, B.cenH * u, 0) });
+  for (const b of boxes) if (b.q.some(([x, y]) => x < 0 || y < 0 || x > W || y > H)) return null;
+  for (let i = 0; i < boxes.length; i++) for (let j = i + 1; j < boxes.length; j++) {
+    if (boxes[i].k === boxes[j].k && boxes[i].k !== -1) continue; // a seat and its own cards are stacked by design
+    if (boxesHit(boxes[i].q, boxes[j].q)) return null;
+  }
+  return res;
+}
+function layoutTable(W, H, specs){
+  const key = [Math.round(W), Math.round(H), Math.round(seatHBase), specs.map(x => x.c + '.' + x.f).join()].join('|');
+  if (layoutCache.key === key) return layoutCache.res;
+  // try sizes from big to small (sizes don't fail in a tidy order, so check each step) and keep the first that fits
+  // blue/accusation cards always lie in front of each player's trial cards (toward the middle of the table)
+  const fit = side => { for (let u = 1.6; u >= 0.36; u -= 0.03) { const r = placeTable(W, H, specs, u, false, side); if (r) return r; } return null; };
+  let res = fit(false);
+  if (!res) res = placeTable(W, H, specs, 0.36, true, false);
+  layoutCache = { key, res }; return res;
 }
 
 /* ---------- render ---------- */
@@ -1306,7 +1400,7 @@ function render(){
       + (offline ? '' : `<div><span class="codebox">Game code <b>${esc(g.code)}</b><button id="copyCode">Copy invite link</button></span></div>`);
   } else if (g.phase === 'over') {
     H = `<h2 class="win ${g.winner}">${g.winner === 'town' ? 'The town prevails' : 'The coven prevails'}</h2>All trial cards are now shown.${g.host === S.me.id ? ' Start another game when ready.' : ''}`;
-  } else if (!inGame) { H = '<h2>Spectating</h2>You joined mid-game. You can see every trial card and talk in the Spirits channel.'; calm = true; }
+  } else if (!inGame) { H = '<h2>Spectating</h2>You joined mid-game. You can see every trial card.'; calm = true; }
   else if (m.k === 'arrange') {
     const mine = me.secrets; const ks = mine.map(x => x.k);
     if (!S.arr || S.arr.length !== ks.length || S.arr.some(k => !ks.includes(k))) { S.arr = ks.slice(); S.arrSel = null; }
@@ -1330,14 +1424,15 @@ function render(){
     const rows = Object.entries(t).sort((a, b) => b[1] - a[1]).map(([tid, c]) => {
       const by = W.filter(w => pd.votes[w] === tid).map(w => esc(nm(g, w).split(' ')[0])).join(', ');
       return `<span class="vote${tid === mine ? ' mine' : ''}"><b>${esc(nm(g, tid))}</b> ${c} vote${c === 1 ? '' : 's'}<small>${by}</small></span>`; }).join('');
-    const what = pd.type === 'raven' ? 'who receives the Raven' : 'who to attack';
+    const what = pd.type === 'raven' ? 'who receives the Raven (anyone, even yourself or a fellow witch)' : 'who to attack';
     H = (pd.type === 'raven' ? '<h2>Place the Raven</h2>' : '<h2>The coven hunts</h2>')
       + (solo ? `You are the only witch: tap a player on the table to choose ${what}.` : `Vote on ${what}: tap a player on the table. You can change your vote until everyone has voted or time runs out. <b>A tie is decided at random</b> between the tied choices.`)
       + `<div class="act votes">${rows || '<span class="note">No votes yet.</span>'}${solo ? '' : `<span class="note">${W.filter(w => pd.votes[w]).length}/${W.length} witches voted</span>`}</div>`;
   } else if (m.k === 'save') { H = `<h2>Stand guard</h2>You hold the Constable. Choose someone to protect tonight (not yourself).`; }
   else if (m.k === 'confess') {
     const mk = pd.mark;
-    H = `<h2>Dawn: confess?</h2>${mk === S.me.id ? '<b style="color:var(--blood)">The coven marked you tonight.</b> ' : ''}Tap one of your trial cards to confess it (turn it face up). Anyone who confesses is safe from tonight’s mark.
+    const guarded = pd.save && P[pd.save] && P[pd.save].alive ? pd.save : null;
+    H = `<h2>Dawn: confess?</h2>${guarded === S.me.id ? '<b style="color:var(--gold)">🏮 The Constable is protecting you tonight: you do not need to confess.</b> ' : guarded ? `<span class="note">🏮 The Constable is protecting ${esc(nm(g, guarded))} tonight.</span> ` : ''}${mk === S.me.id ? '<b style="color:var(--blood)">The coven marked you tonight.</b> ' : ''}Tap one of your trial cards to confess it (turn it face up). Anyone who confesses is safe from tonight’s mark.
       <div class="confess">${me.secrets.map((sc, i) => `<div class="acard ${sc.t}${sc.up ? ' up' : ''}" ${sc.up ? '' : `data-sec="${esc(S.me.id)}:${i}" role="button" tabindex="0"`} title="${sc.up ? 'Already revealed' : 'Confess: reveal this card'}"><span class="pos-n">${i + 1}</span><b>${SECRET[sc.t].i}</b><small>${SECRET[sc.t].n}</small></div>`).join('')}
       <button id="noConfess" style="align-self:center">Don’t confess</button></div>`;
   } else if (m.k === 'secretpick') {
@@ -1347,7 +1442,7 @@ function render(){
     const sub = pd.type === 'night' && pd.stage === 'confess' ? 'Waiting for others to decide whether to confess…' : 'The village sleeps. Strange things stir in the dark…';
     H = `<h2>${pd.type === 'raven' ? 'The first night' : 'Night'}</h2>${dead ? 'As a spirit, you see the coven’s choices on the board.' : sub}`;
   } else if (pd && (pd.type === 'trial' || pd.type === 'pact')) { calm = true; H = `<h2>${pd.type === 'trial' ? 'Trial of ' + esc(nm(g, pd.target)) : 'The Pact'}</h2>Waiting for ${esc(nm(g, pd.chooser))} to choose a trial card…`; }
-  else if (dead) { calm = true; H = '<h2>You are dead</h2>You can see every trial card and haunt the Spirits channel, but the living cannot hear you.'; }
+  else if (dead) { calm = true; H = '<h2>You are dead</h2>You can see every trial card. Watch how the rest of the game unfolds.'; }
   else if (m.k === 'turn') {
     if (S.sel) {
       const type = ct(S.sel), C = CARD[type], have = me.hand.filter(x => ct(x) === type).length;
@@ -1357,7 +1452,7 @@ function render(){
         + (multi ? `<div class="act qty"><span>How many?</span><button id="qtyMinus" aria-label="One fewer" ${S.qty <= 1 ? 'disabled' : ''}>−</button><b>${S.qty}</b><button id="qtyPlus" aria-label="One more" ${S.qty >= have ? 'disabled' : ''}>+</button><button id="qtyAll" class="ghost" ${S.qty >= have ? 'disabled' : ''}>All ${have}</button>${total}</div>` : '');
     }
     else H = g.acted === 'played' ? `<h2>Your turn</h2>Play more cards, or end your turn.` : `<h2>Your turn</h2>Draw 2 cards, or play cards from your hand.`;
-  } else { calm = true; H = `<h2>${esc(nm(g, g.turn))}’s turn</h2>Argue in the town chat while you wait.`; }
+  } else { calm = true; H = `<h2>${esc(nm(g, g.turn))}’s turn</h2>Argue your case with the others while you wait.`; }
   if (waiting()) H += '<div class="note" style="margin-top:6px">Sending…</div>';
   setH('#prompt', H); $('#prompt').classList.toggle('calm', calm);
 
@@ -1366,22 +1461,19 @@ function render(){
   const showVotes = pd && (pd.type === 'raven' || (pd.type === 'night' && pd.stage === 'mark')) && (witch || dead || (play && !inGame));
   const ids0 = g.phase === 'lobby' ? Object.keys(P).sort((a,b) => P[a].joined - P[b].joined) : order(g);
   const mi = ids0.indexOf(S.me.id); const ids = mi > 0 ? ids0.slice(mi).concat(ids0.slice(0, mi)) : ids0; // you sit at the bottom
-  const area = $('#tablearea'), aw = Math.max(200, area.clientWidth - 20), ah = Math.max(200, area.clientHeight - 20);
+  const area = $('#tablearea'), aw = Math.max(200, area.clientWidth - 22), ah = Math.max(200, area.clientHeight - 22); // inside the area's padding
   const n = ids.length, narrow = aw < 640;
-  const compact = narrow || n >= 9;
-  const R = narrow ? (n >= 9 ? { sx:37, sy:44, cx:20, cy:30 } : { sx:37, sy:45, cx:25, cy:31 }) : { sx:44, sy:44, cx:29, cy:29 };
-  // Pick the table's shape, then the largest size that fits the free space without scrolling.
-  const ratio = narrow ? (n <= 6 ? 3 / 4 : n <= 9 ? 3 / 4.4 : 3 / 4.8) : (n <= 6 ? 16 / 11 : n <= 9 ? 16 / 11.8 : 16 / 12.6);
-  const seatRoom = narrow ? 64 : (compact ? 78 : 96); // seats at the top and bottom stick out past the table's edge
-  const tw = Math.min(aw, (ah - seatRoom) * ratio), th = tw / ratio;
-  const sz = $('#seats'); sz.style.width = tw + 'px'; sz.style.height = th + 'px';
-  sz.classList.toggle('compact', compact || tw < 900); sz.classList.toggle('tiny', narrow);
+  // what lies in front of each player: trial cards, plus blue/accusation cards (room for 2 is kept so the table doesn't jump)
+  const frontCount = q => { const t = q.table || []; return t.filter(x => CARD[ct(x.id)].c !== 'red').length + new Set(t.filter(x => CARD[ct(x.id)].c === 'red').map(x => ct(x.id))).size; };
+  const specs = ids.map(id => { const q = P[id]; return { c: q.secrets ? q.secrets.length : 0, f: q.secrets ? Math.max(2, frontCount(q)) : 0 }; });
+  const TL = layoutTable(aw, ah, specs);
+  const compact = n >= 9 || TL.u < .8;
+  const sz = $('#seats'); sz.style.width = aw + 'px'; sz.style.height = ah + 'px'; sz.style.setProperty('--u', TL.u.toFixed(3)); sz.style.setProperty('--us', Math.min(TL.u, SEAT_MAX).toFixed(3));
+  sz.classList.toggle('compact', compact); sz.classList.toggle('tiny', narrow); sz.classList.toggle('sidefront', !!TL.side); S.lastU = TL.u;
   const parts = ids.map((id, k) => {
     const q = P[id]; const can = seatClickable(g, m, id);
-    const ang = Math.PI / 2 + k * 2 * Math.PI / Math.max(n, 1);
-    const sq = narrow && n >= 7 ? 3 : 2, f = v => Math.sign(v) * Math.pow(Math.abs(v), 2 / sq); // squarer ring on phones
-    const rotDeg = Math.round((ang - Math.PI / 2) * 180 / Math.PI) % 360; // cards lie square to their owner, like at a real table
-    const at = (rx, ry) => `left:${(50 + rx * f(Math.cos(ang))).toFixed(2)}%;top:${(50 + ry * f(Math.sin(ang))).toFixed(2)}%`;
+    const rotDeg = TL.rows[k].deg; // cards lie square to their owner, like at a real table
+    const seatAt = `left:${TL.seats[k].x.toFixed(1)}px;top:${TL.seats[k].y.toFixed(1)}px`, rowAt = `left:${TL.rows[k].x.toFixed(1)}px;top:${TL.rows[k].y.toFixed(1)}px`;
     const tags = [];
     if (id === S.me.id) tags.push('<span class="t">you</span>');
     if (id === g.host) tags.push('<span class="t host">host</span>');
@@ -1392,7 +1484,7 @@ function render(){
     if (pd && pd.type === 'arrange' && q.alive) tags.push(pd.ready[id] ? '<span class="t" style="color:var(--witch)">ready ✓</span>' : '<span class="t">arranging…</span>');
     const pts = q.secrets ? accPts(q) : 0;
     const lim = trialAt(q);
-    const meter = q.secrets && q.alive ? `<div class="meter${lim > TRIAL ? ' devoted' : ''}" title="Accusations: ${pts} of ${lim}${lim > TRIAL ? ' (Devotion)' : ''}"><span class="hc">✋${q.hand.length}</span><span class="mb"><i style="width:${Math.min(100, pts / lim * 100)}%"></i></span><b>${pts}</b>/${lim}</div>` : '';
+    const meter = q.secrets && q.alive ? `<div class="meter${lim > TRIAL ? ' devoted' : ''}" title="Accusations: ${pts} of ${lim}${lim > TRIAL ? ' (Devotion)' : ''}"><span class="hc">🃏${q.hand.length}</span><span class="mb"><i style="width:${Math.min(100, pts / lim * 100)}%"></i></span><b>${pts}</b>/${lim}</div>` : '';
     let marks = '';
     if (showVotes) { const by = Object.entries(pd.votes).filter(([,t]) => t === id).map(([v]) => nm(g,v)); if (by.length) marks = `<div class="marks">${pd.type === 'raven' ? 'Raven' : 'marked'} by ${by.map(esc).join(', ')}</div>`; }
     if (pd && pd.type === 'night' && pd.mark === id && (witch || dead || (pd.stage === 'confess' && id === S.me.id))) marks += `<div class="marks" style="color:var(--blood)">☠ marked tonight</div>`;
@@ -1400,8 +1492,8 @@ function render(){
     const rm = g.phase === 'lobby' && q.bot && g.host === S.me.id ? `<button class="rm" data-rm="${esc(id)}" title="Remove bot" aria-label="Remove ${esc(q.name)}">✕</button>` : '';
     const isTurn = play && !pd && g.turn === id;
     const sm_ = mk('seat:' + id);
-    const seat = `<div data-seat="${esc(id)}" class="pos seat${sm_.c}${can ? ' can' : ''}${S.t1 === id ? ' t1' : ''}${q.secrets && !q.alive ? ' dead' : ''}${id === S.me.id ? ' me' : ''}${isTurn ? ' turn' : ''}" style="${at(R.sx, R.sy)};${sm_.s}" ${can ? `data-pick="${esc(id)}" role="button" tabindex="0"` : ''}>
-      ${rm}<div class="sh"><div class="av" style="background:${colorOf(g,id)}">${esc((q.name || '?')[0].toUpperCase())}</div><div style="min-width:0"><div class="nm">${esc(q.name)}</div><div class="sub">${q.hand ? '✋ ' + q.hand.length + ' cards' : g.phase === 'lobby' ? 'seated' : ''}</div></div></div>
+    const seat = `<div data-seat="${esc(id)}" class="pos seat${sm_.c}${can ? ' can' : ''}${S.t1 === id ? ' t1' : ''}${q.secrets && !q.alive ? ' dead' : ''}${id === S.me.id ? ' me' : ''}${isTurn ? ' turn' : ''}" style="${seatAt};${sm_.s}" ${can ? `data-pick="${esc(id)}" role="button" tabindex="0"` : ''}>
+      ${rm}<div class="sh"><div class="av" style="background:${colorOf(g,id)}">${esc((q.name || '?')[0].toUpperCase())}</div><div style="min-width:0"><div class="nm">${esc(q.name)}</div><div class="sub">${q.hand ? '🃏 ' + q.hand.length + ' cards' : g.phase === 'lobby' ? 'seated' : ''}</div></div></div>
       ${meter}<div class="tags">${tags.join('')}</div>${marks}</div>`;
     let trials = '';
     const REDS = ['rumor', 'testimony', 'eyewitness'];
@@ -1415,7 +1507,7 @@ function render(){
       const C = CARD[ct(x.id)], fm = mk('fc:' + x.id), isB = ct(x.id) === 'bound', bp = isB ? boundPartner(g, id) : null;
       const pairTxt = isB ? (bp ? `⇄ ${esc(nm(g, bp).split(' ')[0])}` : 'unlinked') : '';
       return `<div class="fcard ${C.c}${fm.c}${isB && bp ? ' linked' : ''}" style="${fm.s}" data-fc="${esc(x.id)}" title="${C.n}${isB ? (bp ? ' (linked with ' + esc(nm(g, bp)) + ')' : ' (waiting for the second Bound Souls card)') : ''}: ${C.txt}"><b>${C.i}</b><span>${C.n}</span>${pairTxt ? `<em>${pairTxt}</em>` : ''}</div>`; }).join('');
-    if (q.secrets) trials = `<div data-tr="${esc(id)}" class="pos trials${q.alive ? '' : ' gone'}" data-rot="${rotDeg}" style="${at(R.cx, R.cy)};transform:translate(-50%,-50%) rotate(${rotDeg}deg)"><div class="trow">${(id === S.me.id && pd && pd.type === 'arrange' && S.arr ? S.arr.map(k => q.secrets.find(x => x.k === k)).filter(Boolean) : q.secrets).map((sc,i) => {
+    if (q.secrets) trials = `<div data-tr="${esc(id)}" class="pos trials${q.alive ? '' : ' gone'}" data-rot="${rotDeg}" style="${rowAt};transform:translate(-50%,-50%) rotate(${rotDeg}deg)"><div class="trow">${(id === S.me.id && pd && pd.type === 'arrange' && S.arr ? S.arr.map(k => q.secrets.find(x => x.k === k)).filter(Boolean) : q.secrets).map((sc,i) => {
       const take = m.k === 'take' && m.from === id && !sc.up;
       const pick = (m.k === 'secretpick' && m.target === id && !sc.up) || take;
       const peek = !sc.up && (id === S.me.id || seeAll);
@@ -1433,7 +1525,8 @@ function render(){
       <div class="ctext"><b>${label}</b></div>
       <div class="pile" id="discPile" title="Discard pile">${top ? `<div class="dtop ${CARD[ct(top)].c}">${CARD[ct(top)].i}<span>${CARD[ct(top)].n}</span></div>` : '<div class="dtop none"></div>'}<small>Discard ${g.discard.length}</small></div>`;
   }
-  setH('#seats', `<div class="felt"></div><div class="center">${center}</div>` + parts.join('') + `<i data-n="${narrow}"></i>`);
+  const felt = `left:${(aw / 2 - TL.rx).toFixed(1)}px;top:${(ah / 2 - TL.ry).toFixed(1)}px;width:${(2 * TL.rx).toFixed(1)}px;height:${(2 * TL.ry).toFixed(1)}px`;
+  setH('#seats', `<div class="felt" style="${felt}"></div><div class="center">${center}</div>` + parts.join('') + `<i data-n="${narrow}"></i>`);
   $('#seats').classList.toggle('dim', !!night);
 
   // hand
@@ -1499,33 +1592,11 @@ function render(){
   setH('#log', L.length ? L.map(e => `<div class="${e.k || ''}">${esc(e.t)}</div>`).join('') : '<span class="empty">Nothing has happened yet.</span>');
   $('#log').scrollTop = 1e6;
 
-  // chat channel
-  const chs = ['town','coven','spirits'].filter(canSend), cur = $('#chsel').value, lbl = { town:'Town', coven:'Coven', spirits:'Spirits' };
-  const opts = chs.map(c => `<option value="${c}">${lbl[c]}</option>`).join('');
-  if ($('#chsel').innerHTML !== opts) { $('#chsel').innerHTML = opts; if (chs.includes(cur)) $('#chsel').value = cur; else if (chs.includes('coven') && night) $('#chsel').value = 'coven'; }
-  $('#chsel').hidden = chs.length <= 1; $('#chatin').disabled = !chs.length;
-  const v = $('#chsel').value;
-  $('#chatin').placeholder = !chs.length ? (night ? 'The town sleeps. Silence until dawn…' : 'You cannot speak now.') : v === 'coven' ? 'Whisper to the coven…' : v === 'spirits' ? 'Speak among the dead…' : 'Speak to the village…';
-  renderChat();
   runFx();
   const a = $('#tablearea'), key = a.clientWidth + 'x' + a.clientHeight;
   if (S.areaKey !== key) { S.areaKey = key; requestAnimationFrame(render); }
-}
-
-let seenChat = 0;
-function updateUnread(){
-  const open = $('#side').classList.contains('open') || window.innerWidth > 900;
-  const vis = S.chat.filter(m => m && canSee(m.ch)).length;
-  if (open) seenChat = vis;
-  const u = Math.max(0, vis - seenChat); $('#unread').hidden = !u; $('#unread').textContent = u > 9 ? '9+' : u;
-}
-function renderChat(){
-  const el = $('#chatlog'); if (!S.game) return;
-  const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 40;
-  const msgs = S.chat.filter(m => m && canSee(m.ch));
-  setH(el, msgs.length ? msgs.map(m => `<div class="msg ${esc(m.ch)}">${m.ch !== 'town' ? `<span class="ch">${esc(m.ch)}</span>` : ''}<b style="${m.ch === 'town' && S.game.players[m.uid] ? 'color:' + colorOf(S.game, m.uid) : ''}">${esc(m.name)}</b> ${esc(m.text)}</div>`).join('') : '<div class="msg sys">No one has spoken yet.</div>');
-  if (atBottom) el.scrollTop = el.scrollHeight;
-  updateUnread();
+  const hs = [...document.querySelectorAll('#seats .seat')].map(e => e.offsetHeight), u = Math.min(S.lastU || 1, SEAT_MAX);
+  if (hs.length) { const base = Math.max(...hs) / u; if (Math.abs(base - seatHBase) > 4) { seatHBase = base; requestAnimationFrame(render); } }
 }
 
 /* ---------- sound effects (synthesized with Web Audio: nothing to download) ---------- */
@@ -1644,7 +1715,7 @@ function fxDur(e){
     case 'draw': return 450 + 150 * (e.c || 1);
     case 'special': return 650 + ANNOUNCE;
     case 'play': return 850 + ((ct(e.card) === 'thievery' || ct(e.card) === 'fire') ? 140 * (e.c || 0) + 300 : ct(e.card) === 'blame' ? 900 + 110 * ((e.mv || []).length) : 0);
-    case 'flip': return 750; case 'trial': return 900; case 'raven': return 1100; case 'death': return e.night ? 900 : ANNOUNCE; case 'pass': return 1000; case 'dawn': return DAWN_MS; case 'shuffle': return 900; case 'covenpick': return 0; case 'sweep': return 500;
+    case 'flip': return 750; case 'trial': return 900; case 'raven': return 1100; case 'death': return e.night ? 900 : ANNOUNCE; case 'pass': return 1000; case 'dawn': return DAWN_MS; case 'shuffle': return 900; case 'covenpick': return 0; case 'guard': return GUARD_MS; case 'sweep': return 500;
     default: return 0;
   }
 }
@@ -1765,6 +1836,14 @@ function playFx(e){
       e.ids.forEach((id, j) => { Sfx.play('flick', 90 * j); fly(from, discPt(), cardHTML(id), { delay: 90 * j, dur: 600, s0: .45, s1: .4, sm: .55, lift: 25 }); });
       break;
     }
+    case 'guard': {
+      const who = e.p ? esc(nm(g, e.p)) : '';
+      Sfx.play('glow'); Sfx.play('dawn', 150);
+      veil('dawn', GUARD_MS);
+      banner(e.p ? `🏮 The Constable protects ${who}<small><b>${who}</b> is safe tonight and does not need to confess.</small>` : '🏮 The Constable protects no one tonight<small>Anyone the coven chose is in danger unless they confess.</small>', 'dawn', GUARD_MS);
+      if (e.p) { mark('seat:' + e.p, 'hit-blue', 1600); render(); }
+      break;
+    }
     case 'covenpick': {
       const meP = g.players[S.me.id]; const canKnow = isWitch(meP) || (meP && meP.secrets && !meP.alive) || !(meP && meP.secrets);
       if (!canKnow || !e.p || e.solo) break;
@@ -1837,12 +1916,8 @@ $('#howBtn').onclick = () => { $('#modal').hidden = false; };
 $('#leaveTop').onclick = () => leaveGame();
 $('#sndBtn').onclick = () => { Sfx.toggle(); syncSndBtn(); };
 syncSndBtn();
-$('#sideBtn').onclick = () => { $('#side').classList.add('open'); seenChat = S.chat.length; updateUnread(); setTimeout(() => { const el = $('#chatlog'); el.scrollTop = el.scrollHeight; }, 50); };
-$('#closeSide').onclick = () => { $('#side').classList.remove('open'); };
 $('#closeHow').onclick = () => { $('#modal').hidden = true; };
 $('#modal').addEventListener('click', e => { if (e.target.id === 'modal') $('#modal').hidden = true; });
-$('#chatform').addEventListener('submit', sendChat);
-$('#chsel').addEventListener('change', render);
 $('#game').addEventListener('click', e => {
   const t = e.target;
   const tk = t.closest('[data-take]'); if (tk) { if (!waiting()) send({ a:'take', k: tk.dataset.take }); return; }
