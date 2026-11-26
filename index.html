@@ -327,6 +327,48 @@ body.night .dock{background:linear-gradient(#10131bf2,#0b0d12f7)}
   #mysec.dpanel p{font-size:11px}
   .logpanel .log{font-size:12px}
 }
+/* fixed-size dock: the hand box and the table no longer grow or shrink as prompts and cards change */
+.dock{height:252px;overflow:hidden}
+.dock #prompt{flex:none;height:84px;max-height:none;overflow-y:auto}
+.dock .dockrow{flex:none;height:144px;grid-template-rows:144px}
+.dhand,.dhand #handwrap{height:100%;min-height:0}
+.dhand #handwrap .hand{height:100%;box-sizing:border-box;padding:4px 10px 8px 6px!important;overflow-x:auto;overflow-y:hidden;flex-wrap:nowrap;align-items:flex-end}
+.dpanel{height:100%;max-height:none;box-sizing:border-box}
+.dock .hand .card{height:132px;min-height:0}
+/* count badge sits on the card itself, no extra room needed above the hand */
+.dock .hand .card .cnt{top:4px;left:4px;min-width:22px;height:22px;padding:0 5px;border-radius:11px;font:700 12px/22px var(--body);box-shadow:0 0 0 2px #1d1712,0 2px 6px rgba(0,0,0,.5);animation:cntpop .25s ease-out}
+.dock .hand .card.stacked .cn{padding-left:26px}
+.dock .hand .card.sel{transform:none;box-shadow:0 0 0 3px var(--gold),0 0 16px rgba(201,162,74,.55)}
+@keyframes cntpop{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+.dock .hand .card .ct{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+@media (max-width:900px){
+  .dock .hand .card{height:88px}
+  .dock .hand .card .ct{display:none}
+  .dock .hand .card .cnt{min-width:20px;height:20px;font-size:11px;line-height:20px;top:3px;left:3px}
+  .dock .hand .card.stacked .cn{padding-left:22px}
+  .dock{height:284px}
+  .dock #prompt{height:78px}
+  .dock .dockrow{height:186px;grid-template-rows:96px 84px}
+  .dpanel{max-height:none}
+}
+/* while arranging, the arrange tray fills the dock instead of the (empty) hand row */
+.dock.arranging #prompt{flex:1;height:auto}
+.dock.arranging .dockrow{display:none!important}
+/* dock as one grid: the prompt only spans the hand column; Trial cards and Town record use the full height */
+.dock{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(220px,300px) minmax(240px,360px);grid-template-rows:72px 144px;column-gap:12px;row-gap:6px;height:240px}
+.dock .dockrow{display:contents!important}
+.dock #prompt{grid-column:1;grid-row:1;height:auto;min-height:0}
+.dock .dhand{grid-column:1;grid-row:2;min-height:0}
+.dock #mysec{grid-column:2;grid-row:1 / 3}
+.dock .logpanel{grid-column:3;grid-row:1 / 3}
+.dock.arranging #prompt{grid-column:1 / -1;grid-row:1 / 3}
+@media (max-width:900px){
+  .dock{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:72px 96px 84px;column-gap:6px;row-gap:6px;height:280px}
+  .dock #prompt{grid-column:1 / -1}
+  .dock .dhand{grid-column:1 / -1}
+  .dock #mysec{grid-column:1;grid-row:3}
+  .dock .logpanel{grid-column:2;grid-row:3}
+}
 /* animations */
 #fx{position:fixed;inset:0;pointer-events:none;z-index:15;overflow:hidden}
 .flyer{position:absolute;left:0;top:0;will-change:transform,opacity}
@@ -509,7 +551,7 @@ body.night .dock{background:linear-gradient(#10131bf2,#0b0d12f7)}
   <ul>
     <li><b style="color:#e0786d">Red</b> cards are accusations (1, 3 or 7 points). When a player reaches <b>7 points</b> (or 14 if they have Devotion), they go on trial. Whoever played the last accusation picks one of their face-down trial cards to turn over, and their accusations are cleared.</li>
     <li><b style="color:#9bd085">Green</b> cards take effect at once: remove accusations, skip a turn, burn a hand, steal a hand, or shift blame.</li>
-    <li><b style="color:#9ab8e3">Blue</b> cards lie face up on the table in front of a player: Sanctuary (safe at night), Devotion (needs 14 accusation points to go on trial instead of 7), Bound Souls (there are two; when both are on the table, the two players they lie in front of are linked and die together).</li>
+    <li><b style="color:#9ab8e3">Blue</b> cards lie face up on the table in front of a player: Sanctuary (safe at night), Devotion (needs 14 accusation points to go on trial instead of 7), Bound Souls (the two holders are linked: one dies, both die).</li>
   </ul>
   <h3>Night Falls</h3>
   <p>Drawing this card starts a night. The coven secretly votes on a victim (30 seconds; most votes wins, a tie is decided at random between the tied choices), then the Constable guards someone (not themselves). <b>Who the Constable protects is announced to everyone for 10 seconds</b>, so that player knows they don’t need to confess. A Constable whose card has been revealed can no longer protect anyone. At dawn, anyone may <b>confess</b> by turning over one of their own trial cards. The marked player dies unless they were guarded, confessed, or are in Sanctuary. Dawn announces who the Constable protected, who the coven attacked, and what happened. When the night ends, the discard pile is shuffled back into the deck, and Night Falls always goes among the last 10 cards.</p>
@@ -555,7 +597,7 @@ const CARD = {
   blame:      { n:'Blame',       c:'green', two:true, i:'👉', txt:'Move every card in front of one player to another.' },
   sanctuary:  { n:'Sanctuary',   c:'blue',  i:'⛪', txt:'This player cannot die at night.' },
   devotion:   { n:'Devotion',    c:'blue',  i:'🙏', txt:'This player needs 14 accusation points to go on trial.' },
-  bound:      { n:'Bound Souls', c:'blue',  i:'🔗', txt:'When both Bound Souls lie on the table, those two players are linked: if one dies, so does the other.' },
+  bound:      { n:'Bound Souls', c:'blue',  i:'🔗', txt:'The 2 holders are linked: if one dies, both die.' },
   night:      { n:'Night Falls', c:'black', i:'🌑', txt:'The coven hunts. Drawn from the deck.' },
   pact:       { n:'The Pact',    c:'black', i:'🩸', txt:'Trial cards change hands. Drawn from the deck.' },
   raven:      { n:'The Raven',   c:'blue',  i:'🐦‍⬛', txt:'When The Pact is drawn, this player must reveal a trial card. The coven places it on the first night.' },
@@ -1455,6 +1497,7 @@ function render(){
   } else { calm = true; H = `<h2>${esc(nm(g, g.turn))}’s turn</h2>Argue your case with the others while you wait.`; }
   if (waiting()) H += '<div class="note" style="margin-top:6px">Sending…</div>';
   setH('#prompt', H); $('#prompt').classList.toggle('calm', calm);
+  $('.dock').classList.toggle('arranging', /<h2>Arrange your trial cards/.test(H)); // the arrange tray takes the whole dock (same height, so the table never moves)
 
   // round table
   const seeAll = g.phase === 'over' || dead || (play && !inGame);
